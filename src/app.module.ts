@@ -9,9 +9,11 @@ import { ExtractionModule } from './extraction/extraction.module';
 import { NotificationModule } from './notification/notification.module';
 import { RefinementModule } from './refinement/refinement.module';
 import { Search } from './search/search.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'gpm.db',
