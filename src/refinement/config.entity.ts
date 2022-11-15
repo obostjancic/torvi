@@ -1,11 +1,13 @@
 export enum RefinementOperatorType {
   Persist = 'persist',
+  Group = 'group',
+  Filter = 'filter',
 }
 
-export class RefiementOperator {
+export class RefinementOperator {
   type: RefinementOperatorType;
 }
 
 export class RefinementConfig {
-  operators: RefiementOperator[] = [];
+  operators: RefinementOperator[] = [];
 }
