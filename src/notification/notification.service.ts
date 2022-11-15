@@ -1,29 +1,39 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { Strategy } from './strategies/strategy.interface';
-import { SlackMessageStrategy } from './strategies/slack.strategy';
-import { NotificationChannelType, NotificationConfig } from './config.entity';
+import { StrategyFactory } from './strategies/strategy.factory';
+import { NotificationConfig } from './config.entity';
 
 @Injectable()
 export class NotificationService {
   private readonly logger: Logger = new Logger(NotificationService.name);
 
-  constructor(private readonly httpService: HttpService) {}
-
-  // FIXME this should be a factory
-  createStrategy(notification: any): Strategy {
-    if (notification.type === NotificationChannelType.Slack) {
-      return new SlackMessageStrategy(notification.config, this.httpService);
-    }
-  }
+  constructor(private readonly strategies: StrategyFactory) {}
 
   async run(results: any[], config: NotificationConfig) {
-    this.logger.log('Running notification');
+    try {
+      this.logger.log(`Running notifications: ${config.channels.map((c) => c.type)}`);
 
-    await Promise.all(
-      config.channels.map(async (channel) => {
-        return await this.createStrategy(channel).run(results);
-      }),
-    );
+      await Promise.all(
+        config.channels.map(async (channel) => {
+          this.logger.debug(`Sending notification through channel: ${channel.type}`);
+          return await this.strategies.get(channel).run(results, formatter);
+        }),
+      );
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
   }
 }
+
+const formatter = (result: any) => {
+  return Object.entries(result)
+    .map(([key, value]) => {
+      if (Array.isArray(value)) {
+        return `${key}: ${value.join(', ')}`;
+      } else if (typeof value === 'object') {
+        return formatter(value);
+      }
+      return `${key}: ${value}`;
+    })
+    .join(', ');
+};

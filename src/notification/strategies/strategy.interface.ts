@@ -1,3 +1,3 @@
-export interface Strategy {
-  run: (results: any[]) => Promise<void>;
+export interface NotificationStrategy {
+  run: (results: any[], formatter?: (result: any) => string) => Promise<void>;
 }
