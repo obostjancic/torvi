@@ -9,14 +9,20 @@ export class ExtractionService {
   constructor(private readonly strategies: StrategyFactory) {}
 
   async run(config: ExtractionConfig) {
-    this.logger.log('Running extraction');
+    try {
+      this.logger.log(`Running extraction: ${config.sources.map((s) => s.type)}`);
 
-    const results = await Promise.all(
-      config.sources.map(async (source) => {
-        return await this.strategies.get(source).run();
-      }),
-    );
+      const results = await Promise.all(
+        config.sources.map(async (source) => {
+          this.logger.debug(`Extracting from source: ${source.type}`);
+          return await this.strategies.get(source).run();
+        }),
+      );
 
-    return results.flat();
+      return results.flat();
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
   }
 }

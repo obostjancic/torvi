@@ -3,13 +3,10 @@ import { ExtractionStrategy } from '../strategy.interface';
 import { ElementHandle } from '@playwright/test';
 import { Page } from 'playwright';
 import { datesForMonth, mergeResults, splitIntoNumAndLocation, text, toDate, toString } from 'src/common/utils';
+import { GrillAreaConfig, GrillAreaResult } from './grill-area.interface';
+import { format } from 'date-fns';
 
 // FIXME clean all of this up
-
-interface GrillAreaResult {
-  area: number;
-  day: Date;
-}
 
 type Area = any;
 
@@ -29,9 +26,9 @@ const getMonthNamesInInterval = (start: Date, end: Date) => {
 export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
   private readonly logger: Logger = new Logger(GrillAreaStrategy.name);
 
-  constructor(private readonly config: Record<string, any>, private readonly page: Page) {}
+  constructor(private readonly config: GrillAreaConfig, private readonly page: Page) {}
 
-  async run() {
+  async run(): Promise<GrillAreaResult[]> {
     try {
       const from = new Date(this.config.from);
       const to = new Date(this.config.to);
@@ -41,17 +38,17 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
       const flatData = areas
         .map((area) =>
           area.days.map((day) => ({
-            area: area.id,
+            id: area.id,
             day,
           })),
         )
         .flat();
 
-      const filteredData = flatData.filter(
-        ({ area, day }) => day >= from && day <= to && this.config.areas.includes(area),
-      );
+      const filteredData = flatData
+        .filter(({ id, day }) => day >= from && day <= to && this.config.areas.includes(id))
+        .map(({ id, day }) => ({ id, day: format(day, 'yyyy-MM-dd') }));
 
-      return filteredData;
+      return filteredData.map((res) => JSON.parse(JSON.stringify(res)));
     } catch (e) {
       console.log('Error fetching grill areas', e);
       return [];

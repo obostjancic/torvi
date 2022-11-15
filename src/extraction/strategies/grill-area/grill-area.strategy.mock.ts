@@ -1,43 +1,32 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { format } from 'date-fns';
 import { ExtractionStrategy } from '../strategy.interface';
-
-interface GrillAreaResult {
-  area: number;
-  day: Date;
-}
+import { GrillAreaConfig, GrillAreaResult } from './grill-area.interface';
 
 @Injectable()
 export class MockGrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
   private readonly logger: Logger = new Logger(MockGrillAreaStrategy.name);
 
-  constructor(private readonly config: Record<string, any>) {}
+  constructor(private readonly config: GrillAreaConfig) {}
 
-  async run() {
+  async run(): Promise<GrillAreaResult[]> {
     this.logger.log('Fetching mock data');
-    try {
-      const from = new Date(this.config.from);
-      const to = new Date(this.config.to);
 
-      const areas = mockData;
+    const res = mockData
+      .map((area) =>
+        area.days.map((day) => ({
+          id: area.id,
+          day,
+        })),
+      )
+      .flat()
+      .filter(
+        ({ id, day }) =>
+          day >= new Date(this.config.from) && day <= new Date(this.config.to) && this.config.areas.includes(id),
+      )
+      .map(({ id, day }) => ({ id, day: format(day, 'yyyy-MM-dd') }));
 
-      const flatData = areas
-        .map((area) =>
-          area.days.map((day) => ({
-            area: area.id,
-            day,
-          })),
-        )
-        .flat();
-
-      const filteredData = flatData.filter(
-        ({ area, day }) => day >= from && day <= to && this.config.areas.includes(area),
-      );
-
-      return filteredData;
-    } catch (e) {
-      console.log('Error fetching grill areas', e);
-      return [];
-    }
+    return res.map((res) => JSON.parse(JSON.stringify(res)));
   }
 }
 
@@ -50,6 +39,8 @@ export const mockData = [
       new Date('2022-10-18T22:00:00.000Z'),
       new Date('2022-10-19T22:00:00.000Z'),
       new Date('2022-10-23T22:00:00.000Z'),
+      new Date('2022-12-23T22:00:00.000Z'),
+      new Date('2022-12-24T22:00:00.000Z'),
     ],
   },
   {
@@ -67,6 +58,8 @@ export const mockData = [
       new Date('2022-10-24T22:00:00.000Z'),
       new Date('2022-10-26T22:00:00.000Z'),
       new Date('2022-10-27T22:00:00.000Z'),
+      new Date('2022-12-23T22:00:00.000Z'),
+      new Date('2022-12-24T22:00:00.000Z'),
     ],
   },
   {
