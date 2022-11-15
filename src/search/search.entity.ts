@@ -3,9 +3,12 @@ import { ExtractionConfig } from '../extraction/config.entity';
 import { NotificationConfig } from '../notification/config.entity';
 import { RefinementConfig } from '../refinement/config.entity';
 
+type JSONSchema = Record<string, any>;
 export class SearchConfig {
   extraction: ExtractionConfig;
+  input: JSONSchema;
   refinement: RefinementConfig;
+  output: JSONSchema;
   notification: NotificationConfig;
 }
 
