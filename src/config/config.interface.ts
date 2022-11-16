@@ -4,4 +4,8 @@ export interface Config {
   mockRefinement: boolean;
   mockNotification: boolean;
   runScheduledSearches: boolean;
+  emailAuth?: {
+    user: string;
+    pass: string;
+  };
 }

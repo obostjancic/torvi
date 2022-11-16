@@ -1,13 +1,8 @@
-export enum NotificationChannelType {
-  Email = 'email',
-  Slack = 'slack',
-}
+import { EmailNotificationChannel } from './strategies/email/email.interface';
+import { SlackNotificationChannel } from './strategies/slack/slack.interface';
 
-export class NotificationChannel {
-  type: NotificationChannelType;
-  config: Record<string, any>;
-}
+export type NotificationChannel = SlackNotificationChannel | EmailNotificationChannel;
 
-export class NotificationConfig {
+export type NotificationConfig = {
   channels: NotificationChannel[];
-}
+};

@@ -6,9 +6,9 @@ import { RefinementConfig } from '../refinement/config.entity';
 type JSONSchema = Record<string, any>;
 export class SearchConfig {
   extraction: ExtractionConfig;
-  input: JSONSchema;
+  input?: JSONSchema;
   refinement: RefinementConfig;
-  output: JSONSchema;
+  output?: JSONSchema;
   notification: NotificationConfig;
 }
 

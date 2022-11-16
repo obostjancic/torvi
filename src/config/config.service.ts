@@ -16,6 +16,10 @@ export class ConfigService {
       mockRefinement: this.toBoolean(process.env.MOCK_REFINEMENT),
       mockNotification: this.toBoolean(process.env.MOCK_NOTIFICATION),
       runScheduledSearches: this.toBoolean(process.env.RUN_SCHEDULED_SEARCHES),
+      emailAuth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     };
 
     this.logger.log(`Using config: ${JSON.stringify(this.config, null, 2)}`);
@@ -23,6 +27,10 @@ export class ConfigService {
 
   public get(key: keyof Config): Config[keyof Config] {
     return this.config[key];
+  }
+
+  public getEmailAuth() {
+    return this.config.emailAuth;
   }
 
   private toBoolean(value: string): boolean {

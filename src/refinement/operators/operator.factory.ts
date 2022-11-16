@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { groupBy } from 'src/common/utils';
+import { groupBy } from 'src/extraction/strategies/grill-area/grill-area.utils';
 import { RefinementOperatorType } from '../config.entity';
 
 @Injectable()

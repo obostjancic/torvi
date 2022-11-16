@@ -39,15 +39,16 @@ export class SearchScheduleService {
 
   async createSearchInstance(search: Search) {
     const results = await this.extractionService.run(search.config.extraction);
-    this.validateSchema(results, search.config.input.schema);
+    this.validateSchema(results, search.config.input?.schema);
     const refined = await this.refinementService.run(results, search.config.refinement);
-    this.validateSchema(refined, search.config.output.schema);
+    this.validateSchema(refined, search.config.output?.schema);
     const notified = await this.notificationService.run(refined, search.config.notification);
 
     return notified;
   }
 
   private validateSchema(data: any, schema: any) {
+    if (!schema) return;
     try {
       this.validator.validate(data, schema, { throwAll: true });
     } catch (e) {
