@@ -8,13 +8,13 @@ export class RefinementService {
 
   constructor(private readonly operators: OperatorFactory) {}
 
-  run(results: any[], config: RefinementConfig) {
+  async run(results: any[], config: RefinementConfig) {
     try {
       this.logger.log(`Running refinement: ${config.operators.map((o) => o.type)}`);
 
-      config.operators.forEach((operatorConfig) => {
+      await config.operators.forEach(async (operatorConfig) => {
         this.logger.debug(`Applying operator: ${operatorConfig.type}`);
-        results = this.operators.apply(results, operatorConfig);
+        results = await this.operators.apply(results, operatorConfig);
       });
 
       return results;

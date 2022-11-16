@@ -22,7 +22,7 @@ export class SearchService {
 
   async createSearchInstance(id: number) {
     const search = await this.findOne(id);
-    return await this.scheduleService.createSearchInstance(search);
+    return await this.scheduleService.runSearch(search);
   }
 
   create(createSearchDto: CreateSearchDto) {

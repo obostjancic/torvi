@@ -29,7 +29,7 @@ export class SearchScheduleService {
       this.logger.log(`Scheduling search ${search.id} ${search.name} ${search.schedule}`);
 
       const job = new CronJob(search.schedule, () => {
-        this.createSearchInstance(search);
+        this.runSearch(search);
       });
       this.schedulerRegistry.addCronJob('search-' + search.id, job);
 
@@ -37,7 +37,7 @@ export class SearchScheduleService {
     });
   }
 
-  async createSearchInstance(search: Search) {
+  async runSearch(search: Search) {
     const results = await this.extractionService.run(search.config.extraction);
     this.validateSchema(results, search.config.input?.schema);
     const refined = await this.refinementService.run(results, search.config.refinement);
