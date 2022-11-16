@@ -1,14 +1,14 @@
-export enum ExtractionSourceType {
-  GrillArea = 'grill-area',
-}
+import { GrillAreaSource } from './strategies/grill-area/grill-area.interface';
+import { JSONAPISource } from './strategies/json-api/json-api.interface';
 
-export class ExtractionSource {
+export interface ExtractionSourceInterface {
   id: number;
   name: string;
-  type: ExtractionSourceType;
   config: Record<string, any>;
 }
 
-export class ExtractionConfig {
+export type ExtractionSource = GrillAreaSource | JSONAPISource;
+
+export type ExtractionConfig = {
   sources: ExtractionSource[];
-}
+};

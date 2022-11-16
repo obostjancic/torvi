@@ -2,25 +2,20 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ExtractionStrategy } from '../strategy.interface';
 import { ElementHandle } from '@playwright/test';
 import { Page } from 'playwright';
-import { datesForMonth, mergeResults, splitIntoNumAndLocation, text, toDate, toString } from 'src/common/utils';
+import {
+  datesForMonth,
+  getMonthNamesInInterval,
+  mergeResults,
+  splitIntoNumAndLocation,
+  text,
+  toDate,
+  toString,
+} from 'src/extraction/strategies/grill-area/grill-area.utils';
 import { GrillAreaConfig, GrillAreaResult } from './grill-area.interface';
 import { format } from 'date-fns';
+import { sleep } from 'src/common/common.utils';
 
 // FIXME clean all of this up
-
-type Area = any;
-
-const sleep = (ms = 1000) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const getMonthNamesInInterval = (start: Date, end: Date) => {
-  const months: string[] = [];
-  const date = new Date(start);
-  while (date <= end) {
-    months.push(date.toLocaleString('default', { month: 'long' }).toLowerCase());
-    date.setMonth(date.getMonth() + 1);
-  }
-  return months;
-};
 
 @Injectable()
 export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
@@ -56,7 +51,7 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
   }
 
   public async fetchCurrentState(from, to) {
-    this.logger.log('Fetching real');
+    this.logger.log('Fetching https://mein.wien.gv.at/grillplatz');
     const results = [];
 
     for (const month of getMonthNamesInInterval(from, to)) {
@@ -69,14 +64,35 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
   }
 
   private async checkAllAreas(from: Date, to: Date) {
-    await this.page.goto('https://mein.wien.gv.at/grillplatz/internet/Startseite.aspx', {
+    const grillPlatzReserveUrl = 'https://mein.wien.gv.at/grillplatz/internet/Startseite.aspx';
+    await this.page.goto(grillPlatzReserveUrl, {
       waitUntil: 'networkidle',
     });
 
-    await selectAnyArea(this.page);
-    await fillStartDate(this.page, from);
-    await fillEndDate(this.page, to);
-    await proceed(this.page);
+    // select any area
+    await sleep();
+    const anyAreaButtonId = '#btngroupBottom_cmdIrgendeinGrillplatz_input';
+    const anyArea = await this.page.$(anyAreaButtonId);
+    await anyArea.click();
+    await this.page.waitForLoadState('networkidle');
+
+    // fill start date
+    await sleep();
+    const startDateId = '#Groupofcontrols1_txtDatumVon_input';
+    const startDateElement = await this.page.$(startDateId);
+    await fillDate(startDateElement, from);
+
+    // fill end date
+    const endDateId = '#Groupofcontrols1_txtDatumBis_input';
+    const endDateElement = await this.page.$(endDateId);
+    await fillDate(endDateElement, to);
+
+    //  proceed
+    await sleep();
+    const proceedButtonId = '#grp1_cmdWeiter_input';
+    const proceedButton = await this.page.$(proceedButtonId);
+    await proceedButton.click();
+    await this.page.waitForLoadState('networkidle');
 
     const areaResults = await this.collectAreaResults();
 
@@ -89,49 +105,54 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
     await sleep();
     const areaOpts = await this.page.$$('#GroupGrillplatz_cboGrillplatz_input > option');
     await sleep();
-    const results: Area[] = [];
+
+    const results = [];
     for (const areaOptIdx of areaOpts.map((_, i) => i)) {
       // console.log(`Checking areas ${areaOptIdx + 1}/${areaOpts.length}`);
+
+      // switch to area
       await sleep();
-      await switchToArea(this.page, areaOptIdx);
-      results.push(await this.checkArea());
+      await this.page.waitForLoadState('networkidle');
+      await sleep();
+
+      // select area in dropdown
+      const areaDropdownId = '#GroupGrillplatz_cboGrillplatz_input';
+      const areaDropdown = await this.page.$(areaDropdownId);
+      await areaDropdown.scrollIntoViewIfNeeded();
+      await areaDropdown.click();
+      await areaDropdown.selectOption({ index: areaOptIdx });
+
+      // click on confirm button
+      const confirmButtonId = '#GroupGrillplatz_cmdGrillplatz_input';
+      const confirmButton = await this.page.$(confirmButtonId);
+      await confirmButton.click();
+
+      await this.page.waitForLoadState('networkidle');
+
+      await sleep();
+      // get name of area
+      const selectedArea = await text(
+        this.page.$("#GroupGrillplatz_cboGrillplatz_input > option[selected='selected']"),
+      );
+      await sleep();
+
+      // extract available dates from calendar
+      const calenderTable = await this.page.$('#GroupKalender_calH');
+      const days = await calenderTable.$$("tbody > tr > td > a[style*='color:Black']");
+
+      const daysStr = await Promise.all(days.map(async (day) => toDate(await day.getAttribute('title'))));
+
+      const { areaNumber } = splitIntoNumAndLocation(selectedArea);
+
+      results.push({
+        id: Number(areaNumber),
+        days: daysStr,
+      });
     }
+
     return results;
   }
-
-  checkArea = async (): Promise<Area> => {
-    await sleep();
-    const selectedArea = await text(this.page.$("#GroupGrillplatz_cboGrillplatz_input > option[selected='selected']"));
-    await sleep();
-    // const areaSummary = await text(this.page.$('#GroupKalender_lblH'));
-
-    const daysStr = await extractAvailableDays(this.page);
-    const { areaNumber } = splitIntoNumAndLocation(selectedArea);
-
-    return {
-      id: Number(areaNumber),
-      days: daysStr,
-    };
-  };
 }
-
-export const selectAnyArea = async (page: Page) => {
-  await sleep();
-  const anyArea = await page.$('#btngroupBottom_cmdIrgendeinGrillplatz_input');
-  await anyArea.click();
-  await page.waitForLoadState('networkidle');
-};
-
-export const fillStartDate = async (page: Page, targetDate: Date) => {
-  await sleep();
-  const startDateElement = await page.$('#Groupofcontrols1_txtDatumVon_input');
-  await fillDate(startDateElement, targetDate);
-};
-
-export const fillEndDate = async (page: Page, targetDate: Date) => {
-  const endDateElement = await page.$('#Groupofcontrols1_txtDatumBis_input');
-  await fillDate(endDateElement, targetDate);
-};
 
 export const fillDate = async (dateElement: ElementHandle, targetDate: Date) => {
   await dateElement.scrollIntoViewIfNeeded();
@@ -139,36 +160,4 @@ export const fillDate = async (dateElement: ElementHandle, targetDate: Date) => 
   await dateElement.fill('');
   await dateElement.type(toString(targetDate));
   await dateElement.press('Enter', { delay: 100 });
-};
-
-export const proceed = async (page: Page) => {
-  await sleep();
-  const weiter = await page.$('#grp1_cmdWeiter_input');
-  await weiter.click();
-  await page.waitForLoadState('networkidle');
-};
-
-export const switchToArea = async (page: Page, index: number) => {
-  await sleep();
-  await page.waitForLoadState('networkidle');
-  await sleep();
-
-  const dropdown = await page.$('#GroupGrillplatz_cboGrillplatz_input');
-  await dropdown.scrollIntoViewIfNeeded();
-  await dropdown.click();
-  await dropdown.selectOption({ index });
-
-  const confirm = await page.$('#GroupGrillplatz_cmdGrillplatz_input');
-  await confirm.click();
-
-  await page.waitForLoadState('networkidle');
-};
-
-export const extractAvailableDays = async (page: Page) => {
-  const calenderTable = await page.$('#GroupKalender_calH');
-  const days = await calenderTable.$$("tbody > tr > td > a[style*='color:Black']");
-
-  const daysStr = await Promise.all(days.map(async (day) => toDate(await day.getAttribute('title'))));
-
-  return daysStr;
 };

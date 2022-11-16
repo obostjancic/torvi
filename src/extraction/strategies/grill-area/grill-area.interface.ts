@@ -1,11 +1,18 @@
 import { ExtractionResult } from '../strategy.interface';
 
+export const GrillAreaSourceType = 'grill-area';
+
 export type GrillAreaConfig = {
   from: Date;
   to: Date;
   areas: number[];
 };
 
-export interface GrillAreaResult extends ExtractionResult {
+export type GrillAreaSource = {
+  type: typeof GrillAreaSourceType;
+  config: GrillAreaConfig;
+};
+
+export type GrillAreaResult = ExtractionResult & {
   day: Date;
-}
+};

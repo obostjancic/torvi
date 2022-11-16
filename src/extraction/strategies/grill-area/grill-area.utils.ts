@@ -96,25 +96,16 @@ export const firstDays = (dates: Date[]) => {
   return dates.slice(0, 3).map(shortDate);
 };
 
-export const shortNum = (areaNum: string) => {
-  return areaNum.replace(/^Nummer /, 'No. ');
-};
-
 export const padLeft = (str: string, length = 6, pad = ' '): string => {
   return str.length >= length ? str : padLeft(pad + str, length, pad);
 };
 
-export const padRight = (str: string, length = 6, pad = ' '): string => {
-  return str.length >= length ? str : padRight(str + pad, length, pad);
-};
-
-export const getFirstAvailableDate = (report: AreaResult[]) => {
-  const dates = report.map((area) => new Date(area.days?.[0]));
-  return dates.sort((a, b) => a.getTime() - b.getTime())[0];
-};
-
-export const getFirstAvailableDateText = (report: AreaResult[]) => {
-  const dates = report.map((area) => new Date(area.days?.[0]));
-  if (dates.length) return `First available date: ${shortDate(dates.sort((a, b) => a.getTime() - b.getTime())[0])}`;
-  return 'No dates available';
+export const getMonthNamesInInterval = (start: Date, end: Date) => {
+  const months: string[] = [];
+  const date = new Date(start);
+  while (date <= end) {
+    months.push(date.toLocaleString('default', { month: 'long' }).toLowerCase());
+    date.setMonth(date.getMonth() + 1);
+  }
+  return months;
 };
