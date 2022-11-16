@@ -1,15 +1,22 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
-import { NotificationChannel, NotificationChannelType } from '../config.entity';
+import { NotificationChannel } from '../config.entity';
+import { EmailNotificationChannelType } from './email/email.interface';
+import { EmailStrategy } from './email/email.strategy';
+import { SlackNotificationChannelType } from './slack/slack.interface';
 import { SlackMessageStrategy } from './slack/slack.strategy';
 import { MockSlackMessageStrategy } from './slack/slack.strategy.mock';
 import { NotificationStrategy } from './strategy.interface';
-import { SlackMessageConfig } from './slack/slack.interface';
 
 @Injectable()
 export class StrategyFactory {
-  constructor(private readonly config: ConfigService, private readonly httpService: HttpService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly httpService: HttpService,
+    private mailerService: MailerService,
+  ) {}
 
   public get(channel: NotificationChannel) {
     if (this.config.get('mockNotification')) {
@@ -20,13 +27,15 @@ export class StrategyFactory {
   }
 
   private getStrategy(channel: NotificationChannel): NotificationStrategy {
-    if (channel.type === NotificationChannelType.Slack) {
-      return new SlackMessageStrategy(channel.config as SlackMessageConfig, this.httpService);
+    if (channel.type === SlackNotificationChannelType) {
+      return new SlackMessageStrategy(channel.config, this.httpService);
+    } else if (channel.type === EmailNotificationChannelType) {
+      return new EmailStrategy(channel.config, this.mailerService);
     }
   }
 
   private getMockStrategy(channel: NotificationChannel): NotificationStrategy {
-    if (channel.type === NotificationChannelType.Slack) {
+    if (channel.type === SlackNotificationChannelType) {
       return new MockSlackMessageStrategy();
     }
   }

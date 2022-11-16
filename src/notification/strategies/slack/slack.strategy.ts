@@ -2,14 +2,14 @@ import { HttpService } from '@nestjs/axios';
 import { Logger } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { NotificationStrategy } from '../strategy.interface';
-import { SlackMessageConfig } from './slack.interface';
+import { SlackConfig } from './slack.interface';
 
 export class SlackMessageStrategy implements NotificationStrategy {
   private readonly MAX_MESSAGE_LENGTH = 3000;
 
   private readonly logger = new Logger(SlackMessageStrategy.name);
 
-  constructor(private readonly config: SlackMessageConfig, private readonly httpService: HttpService) {}
+  constructor(private readonly config: SlackConfig, private readonly httpService: HttpService) {}
 
   async run(results: any[], formatter: (result: any) => string = (result) => JSON.stringify(result)) {
     this.logger.log('Sending slack notification');
