@@ -9,8 +9,13 @@ export type GroupOperatorOpts<T> = {
 
 export type GroupOperator<T> = (results: T[], opts: GroupOperatorOpts<T>) => T[];
 
+// TODO write test
 export const group: GroupOperator<any> = (results, opts) => {
-  const otherKeys = Object.keys(results[0]).filter((key) => key !== opts.by);
+  if (!results.length) {
+    return [];
+  }
+
+  const otherKeys = Object.keys(results[0]).filter((key) => key !== opts.by && key !== 'id');
   const groupedArr = Object.values(groupBy(results, opts.by));
 
   return groupedArr.map((group: unknown[]) => {

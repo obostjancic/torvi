@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { ExtractionConfig } from '../extraction/config.entity';
-import { NotificationConfig } from '../notification/config.entity';
-import { RefinementConfig } from '../refinement/config.entity';
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { ExtractionConfig } from '../../extraction/config.entity';
+import { NotificationConfig } from '../../notification/config.entity';
+import { RefinementConfig } from '../../refinement/config.entity';
+import { SearchRun } from './search-run.entity';
 
 type JSONSchema = Record<string, any>;
 export class SearchConfig {
@@ -31,4 +32,7 @@ export class Search {
 
   @Column({ type: 'simple-json' })
   config: SearchConfig;
+
+  @OneToMany(() => SearchRun, (run) => run.search)
+  runs: SearchRun[];
 }

@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ExtractionConfig } from './config.entity';
+import { Search } from 'src/search/entities/search.entity';
 import { StrategyFactory } from './strategies/strategy.factory';
+import { v4 } from 'uuid';
+import { SearchRun } from 'src/search/entities/search-run.entity';
 
 @Injectable()
 export class ExtractionService {
@@ -8,21 +10,26 @@ export class ExtractionService {
 
   constructor(private readonly strategies: StrategyFactory) {}
 
-  async run(config: ExtractionConfig) {
+  async extract(search: Search, run: SearchRun) {
+    const { sources } = search.config.extraction;
     try {
-      this.logger.log(`Running extraction: ${config.sources.map((s) => s.type)}`);
+      this.logger.log(`Running extraction: ${sources.map((s) => s.type)}`);
 
       const results = await Promise.all(
-        config.sources.map(async (source) => {
+        sources.map(async (source) => {
           this.logger.debug(`Extracting from source: ${source.type}`);
           return await this.strategies.get(source).run();
         }),
       );
 
-      return results.flat();
+      run.results = results.flat();
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
+  }
+
+  private assignId(result: any) {
+    return { ...result, id: v4() };
   }
 }

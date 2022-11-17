@@ -14,5 +14,6 @@ export type GrillAreaSource = {
 };
 
 export type GrillAreaResult = ExtractionResult & {
+  area: number;
   day: Date;
 };

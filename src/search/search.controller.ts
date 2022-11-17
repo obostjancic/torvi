@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { SearchService } from './search.service';
+import { SearchService } from './services/search.service';
 import { CreateSearchDto } from './dto/create-search.dto';
 import { UpdateSearchDto } from './dto/update-search.dto';
 
@@ -7,9 +7,9 @@ import { UpdateSearchDto } from './dto/update-search.dto';
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
-  @Post(':id/instances')
+  @Post(':id/run')
   async createInstance(@Param('id') id: string) {
-    return this.searchService.createSearchInstance(+id);
+    return this.searchService.createSearchRun(+id);
   }
 
   @Post()

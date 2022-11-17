@@ -34,6 +34,7 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
         .map((area) =>
           area.days.map((day) => ({
             id: area.id,
+            area: area.id,
             day,
           })),
         )
@@ -41,12 +42,12 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
 
       const filteredData = flatData
         .filter(({ id, day }) => day >= from && day <= to && this.config.areas.includes(id))
-        .map(({ id, day }) => ({ id, day: format(day, 'yyyy-MM-dd') }));
+        .map(({ id, day, area }) => ({ id, day: format(day, 'yyyy-MM-dd'), area }));
 
       return filteredData.map((res) => JSON.parse(JSON.stringify(res)));
     } catch (e) {
       console.log('Error fetching grill areas', e);
-      return [];
+      throw e;
     }
   }
 
@@ -108,6 +109,7 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
 
     const results = [];
     for (const areaOptIdx of areaOpts.map((_, i) => i)) {
+      if (areaOptIdx > 2) continue;
       // console.log(`Checking areas ${areaOptIdx + 1}/${areaOpts.length}`);
 
       // switch to area

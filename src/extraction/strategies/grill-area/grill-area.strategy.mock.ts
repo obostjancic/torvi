@@ -16,6 +16,7 @@ export class MockGrillAreaStrategy implements ExtractionStrategy<GrillAreaResult
       .map((area) =>
         area.days.map((day) => ({
           id: area.id,
+          area: area.id,
           day,
         })),
       )
@@ -24,7 +25,7 @@ export class MockGrillAreaStrategy implements ExtractionStrategy<GrillAreaResult
         ({ id, day }) =>
           day >= new Date(this.config.from) && day <= new Date(this.config.to) && this.config.areas.includes(id),
       )
-      .map(({ id, day }) => ({ id, day: format(day, 'yyyy-MM-dd') }));
+      .map(({ id, day, area }) => ({ id, day: format(day, 'yyyy-MM-dd'), area }));
 
     return res.map((res) => JSON.parse(JSON.stringify(res)));
   }
@@ -40,7 +41,8 @@ export const mockData = [
       new Date('2022-10-19T22:00:00.000Z'),
       new Date('2022-10-23T22:00:00.000Z'),
       new Date('2022-12-23T22:00:00.000Z'),
-      new Date('2022-12-24T22:00:00.000Z'),
+      // new Date('2022-12-24T22:00:00.000Z'),
+      new Date('2022-12-25T22:00:00.000Z'),
     ],
   },
   {

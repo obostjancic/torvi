@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { SearchRun } from 'src/search/entities/search-run.entity';
+import { Search } from 'src/search/entities/search.entity';
 import { StrategyFactory } from './strategies/strategy.factory';
-import { NotificationConfig } from './config.entity';
 
 @Injectable()
 export class NotificationService {
@@ -8,14 +9,15 @@ export class NotificationService {
 
   constructor(private readonly strategies: StrategyFactory) {}
 
-  async run(results: any[], config: NotificationConfig) {
+  async notify<T = any>(search: Search, run: SearchRun, results: T[]) {
+    const { channels } = search.config.notification;
     try {
-      this.logger.log(`Running notifications: ${config.channels.map((c) => c.type)}`);
+      this.logger.log(`Running notifications: ${channels.map((c) => c.type)}`);
 
       await Promise.all(
-        config.channels.map(async (channel) => {
+        channels.map(async (channel) => {
           this.logger.debug(`Sending notification through channel: ${channel.type}`);
-          return await this.strategies.get(channel).run(results, formatter);
+          return await this.strategies.get(channel).run(results, { search, run });
         }),
       );
     } catch (e) {
@@ -24,16 +26,3 @@ export class NotificationService {
     }
   }
 }
-
-const formatter = (result: any) => {
-  return Object.entries(result)
-    .map(([key, value]) => {
-      if (Array.isArray(value)) {
-        return `${key}: ${value.join(', ')}`;
-      } else if (typeof value === 'object') {
-        return formatter(value);
-      }
-      return `${key}: ${value}`;
-    })
-    .join(', ');
-};

@@ -6,7 +6,9 @@ export class MockSlackMessageStrategy implements NotificationStrategy {
 
   private readonly logger = new Logger(MockSlackMessageStrategy.name);
 
-  async run(results: any[], formatter: (result: any) => string = (result) => JSON.stringify(result)) {
+  constructor(private formatter: (result: any) => string) {}
+
+  async run(results, { search, run }) {
     this.logger.log('Sending slack notification');
 
     if (!results.length) {
@@ -14,13 +16,13 @@ export class MockSlackMessageStrategy implements NotificationStrategy {
       return;
     }
 
-    const message = await this.constructMessage(results, formatter);
+    const message = await this.constructMessage(results);
     await this.sendMessage(message);
   }
 
-  private async constructMessage(results: any[], formatter: (result: any) => string) {
+  private async constructMessage(results: any[]) {
     // TODO read config for formatting
-    const text = results.map((result) => formatter(result)).join('\n');
+    const text = results.map((result) => this.formatter(result)).join('\n');
 
     if (text.length >= this.MAX_MESSAGE_LENGTH) {
       this.logger.warn(`Message is too long (${text.length}), truncating`);

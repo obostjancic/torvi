@@ -8,9 +8,13 @@ export class EmailStrategy implements NotificationStrategy {
 
   private readonly logger = new Logger(EmailStrategy.name);
 
-  constructor(private readonly config: EmailConfig, private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly config: EmailConfig,
+    private readonly mailerService: MailerService,
+    private formatter: (result: any) => string,
+  ) {}
 
-  async run(results: any[], formatter: (result: any) => string = (result) => JSON.stringify(result)) {
+  async run(results, { search, run }) {
     this.logger.log('Sending email notification');
 
     if (!results.length) {
@@ -18,13 +22,13 @@ export class EmailStrategy implements NotificationStrategy {
       return;
     }
 
-    const message = await this.constructMessage(results, formatter);
+    const message = await this.constructMessage(results);
     await this.sendEmail(message);
   }
 
-  private async constructMessage(results: any[], formatter: (result: any) => string) {
+  private async constructMessage(results: any[]) {
     // TODO read config for formatting
-    const text = results.map((result) => formatter(result)).join('\n');
+    const text = results.map((result) => this.formatter(result)).join('\n');
 
     if (text.length >= this.MAX_MESSAGE_LENGTH) {
       this.logger.warn(`Message is too long (${text.length}), truncating`);

@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateSearchDto } from './dto/create-search.dto';
-import { UpdateSearchDto } from './dto/update-search.dto';
-import { SearchScheduleService } from './search-schedule/search-schedule.service';
-import { Search } from './search.entity';
+import { CreateSearchDto } from '../dto/create-search.dto';
+import { UpdateSearchDto } from '../dto/update-search.dto';
+import { SearchRunService } from './search-run.service';
+import { SearchScheduleService } from './search-schedule.service';
+import { Search } from '../entities/search.entity';
 
 @Injectable()
 export class SearchService {
@@ -14,15 +15,16 @@ export class SearchService {
     @InjectRepository(Search)
     private readonly searchRepo: Repository<Search>,
     private readonly scheduleService: SearchScheduleService,
+    private readonly searchRunService: SearchRunService,
   ) {
     this.findAll().then((searches) => {
       this.scheduleService.scheduleSearches(searches);
     });
   }
 
-  async createSearchInstance(id: number) {
+  async createSearchRun(id: number) {
     const search = await this.findOne(id);
-    return await this.scheduleService.runSearch(search);
+    return await this.searchRunService.run(search);
   }
 
   create(createSearchDto: CreateSearchDto) {

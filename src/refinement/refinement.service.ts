@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { RefinementConfig } from './config.entity';
+import { SearchRun } from 'src/search/entities/search-run.entity';
+import { Search } from 'src/search/entities/search.entity';
 import { OperatorFactory } from './operators/operator.factory';
 
 @Injectable()
@@ -8,14 +9,17 @@ export class RefinementService {
 
   constructor(private readonly operators: OperatorFactory) {}
 
-  async run(results: any[], config: RefinementConfig) {
+  async refine(search: Search, run: SearchRun) {
+    const { operators } = search.config.refinement;
+    let results = run.results;
     try {
-      this.logger.log(`Running refinement: ${config.operators.map((o) => o.type)}`);
+      this.logger.log(`Running refinement: ${operators.map((o) => o.type)}`);
 
-      await config.operators.forEach(async (operatorConfig) => {
-        this.logger.debug(`Applying operator: ${operatorConfig.type}`);
-        results = await this.operators.apply(results, operatorConfig);
-      });
+      for (const operator of operators) {
+        this.logger.debug(`Applying operator: ${operator.type}`);
+        results = await this.operators.apply(operator, run, results);
+        this.logger.debug(`After operator: ${operator.type}`);
+      }
 
       return results;
     } catch (e) {
