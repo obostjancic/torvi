@@ -1,6 +1,5 @@
-import { SearchRun } from 'src/search/entities/search-run.entity';
-import { Search } from 'src/search/entities/search.entity';
+import { Message } from '../message.service';
 
 export interface NotificationStrategy {
-  run: (results: any[], meta: { search: Search; run: SearchRun }) => Promise<void>;
+  send: (message: Message) => Promise<void>;
 }

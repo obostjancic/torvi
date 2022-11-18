@@ -28,30 +28,17 @@ export class StrategyFactory {
 
   private getStrategy(channel: NotificationChannel): NotificationStrategy {
     if (channel.type === SlackNotificationChannelType) {
-      return new SlackMessageStrategy(channel.config, this.httpService, formatter);
+      return new SlackMessageStrategy(channel.config, this.httpService);
     } else if (channel.type === EmailNotificationChannelType) {
-      return new EmailStrategy(channel.config, this.mailerService, formatter);
+      return new EmailStrategy(channel.config, this.mailerService);
     }
   }
 
   private getMockStrategy(channel: NotificationChannel): NotificationStrategy {
     if (channel.type === SlackNotificationChannelType) {
-      return new MockSlackMessageStrategy(formatter);
+      return new MockSlackMessageStrategy();
     } else if (channel.type === EmailNotificationChannelType) {
-      return { run: () => Promise.resolve() };
+      return { send: () => Promise.resolve() };
     }
   }
 }
-
-const formatter = (result: any) => {
-  return Object.entries(result)
-    .map(([key, value]) => {
-      if (Array.isArray(value)) {
-        return `${key}: ${value.join(', ')}`;
-      } else if (typeof value === 'object') {
-        return formatter(value);
-      }
-      return `${key}: ${value}`;
-    })
-    .join(', ');
-};

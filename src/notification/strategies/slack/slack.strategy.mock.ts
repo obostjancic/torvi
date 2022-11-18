@@ -1,28 +1,20 @@
 import { Logger } from '@nestjs/common';
+import { Message } from '../../message.service';
 import { NotificationStrategy } from '../strategy.interface';
+import { SlackMessageStrategy } from './slack.strategy';
 
 export class MockSlackMessageStrategy implements NotificationStrategy {
   private readonly MAX_MESSAGE_LENGTH = 3000;
 
-  private readonly logger = new Logger(MockSlackMessageStrategy.name);
+  private readonly logger = new Logger(SlackMessageStrategy.name);
 
-  constructor(private formatter: (result: any) => string) {}
-
-  async run(results, { search, run }) {
-    this.logger.log('Sending slack notification');
-
-    if (!results.length) {
-      this.logger.warn('No results to send');
-      return;
-    }
-
-    const message = await this.constructMessage(results);
-    await this.sendMessage(message);
+  async send(message: Message) {
+    await this.sendMessage(this.constructMessage(message));
   }
 
-  private async constructMessage(results: any[]) {
+  private async constructMessage(message: Message) {
     // TODO read config for formatting
-    const text = results.map((result) => this.formatter(result)).join('\n');
+    const text = [message.title, '\n', message.prefix, ...message.results, message.postfix].join('\n');
 
     if (text.length >= this.MAX_MESSAGE_LENGTH) {
       this.logger.warn(`Message is too long (${text.length}), truncating`);
@@ -40,7 +32,6 @@ export class MockSlackMessageStrategy implements NotificationStrategy {
       ],
     };
   }
-
   private async sendMessage(message: any) {
     if (!message) throw new Error('Slack message is empty');
     this.logger.log(`Sending slack message: ${JSON.stringify(message)}`);

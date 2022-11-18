@@ -7,7 +7,7 @@ import { UpdateSearchDto } from './dto/update-search.dto';
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
-  @Post(':id/run')
+  @Post(':id/runs')
   async createInstance(@Param('id') id: string) {
     return this.searchService.createSearchRun(+id);
   }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SearchRun } from 'src/search/entities/search-run.entity';
+import { SearchRun } from './entities/search-run.entity';
 import { ExtractionModule } from '../extraction/extraction.module';
 import { NotificationModule } from '../notification/notification.module';
 import { RefinementModule } from '../refinement/refinement.module';

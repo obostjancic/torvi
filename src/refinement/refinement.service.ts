@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { SearchRun } from 'src/search/entities/search-run.entity';
-import { Search } from 'src/search/entities/search.entity';
+import { SearchRun } from '../search/entities/search-run.entity';
+import { Search } from '../search/entities/search.entity';
 import { OperatorFactory } from './operators/operator.factory';
 
 @Injectable()

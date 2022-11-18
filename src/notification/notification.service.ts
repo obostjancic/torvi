@@ -1,28 +1,35 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { SearchRun } from 'src/search/entities/search-run.entity';
-import { Search } from 'src/search/entities/search.entity';
+import { SearchRun } from '../search/entities/search-run.entity';
+import { Search } from '../search/entities/search.entity';
+import { NotificationChannel } from './config.entity';
+import { Message, MessageService } from './message.service';
 import { StrategyFactory } from './strategies/strategy.factory';
 
 @Injectable()
 export class NotificationService {
   private readonly logger: Logger = new Logger(NotificationService.name);
 
-  constructor(private readonly strategies: StrategyFactory) {}
+  constructor(private readonly strategies: StrategyFactory, private readonly messageService: MessageService) {}
 
-  async notify<T = any>(search: Search, run: SearchRun, results: T[]) {
+  async notify(search: Search, run: SearchRun, results: any[]) {
     const { channels } = search.config.notification;
     try {
-      this.logger.log(`Running notifications: ${channels.map((c) => c.type)}`);
+      const message = await this.messageService.constructMessage(results, search, run);
 
-      await Promise.all(
-        channels.map(async (channel) => {
-          this.logger.debug(`Sending notification through channel: ${channel.type}`);
-          return await this.strategies.get(channel).run(results, { search, run });
-        }),
-      );
+      await this.broadcastMessage(channels, message);
     } catch (e) {
       this.logger.error(e);
       throw e;
     }
+  }
+
+  private async broadcastMessage(channels: NotificationChannel[], message: Message) {
+    this.logger.log(`Running notifications: ${channels.map((c) => c.type)}`);
+    await Promise.all(
+      channels.map(async (channel) => {
+        this.logger.debug(`Sending notification through channel: ${channel.type}`);
+        return await this.strategies.get(channel).send(message);
+      }),
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createHash } from 'crypto';
-import { SearchRun } from 'src/search/entities/search-run.entity';
+import { SearchRun } from '../../search/entities/search-run.entity';
 import { IsNull, Not, Repository } from 'typeorm';
 
 export const DiffOperatorType = 'diff';
@@ -47,10 +47,9 @@ const diffs = (arr1, arr2) => {
 };
 
 const toHashMap = (results: any[] = []) => {
-  const hash = createHash('md5');
   return new Map<string, any>(
     results.map((r: any) => {
-      const hashed = hash.update(JSON.stringify(r)).digest('hex');
+      const hashed = createHash('md5').update(JSON.stringify(r)).digest('hex');
       return [hashed, r];
     }) as any,
   );

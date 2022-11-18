@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Logger } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
+import { Message } from '../../message.service';
 import { NotificationStrategy } from '../strategy.interface';
 import { SlackConfig } from './slack.interface';
 
@@ -9,27 +10,15 @@ export class SlackMessageStrategy implements NotificationStrategy {
 
   private readonly logger = new Logger(SlackMessageStrategy.name);
 
-  constructor(
-    private readonly config: SlackConfig,
-    private readonly httpService: HttpService,
-    private formatter: (result: any) => string,
-  ) {}
+  constructor(private readonly config: SlackConfig, private readonly httpService: HttpService) {}
 
-  async run(results, { search, run }) {
-    this.logger.log('Sending slack notification');
-
-    if (!results.length) {
-      this.logger.warn('No results to send');
-      return;
-    }
-
-    const message = await this.constructMessage(results);
-    await this.sendMessage(message);
+  async send(message: Message) {
+    await this.sendMessage(this.constructMessage(message));
   }
 
-  private async constructMessage(results: any[]) {
+  private constructMessage(message: Message) {
     // TODO read config for formatting
-    const text = results.map((result) => this.formatter(result)).join('\n');
+    const text = [message.title, '\n', message.prefix, ...message.results, message.postfix].join('\n');
 
     if (text.length >= this.MAX_MESSAGE_LENGTH) {
       this.logger.warn(`Message is too long (${text.length}), truncating`);

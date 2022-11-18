@@ -23,6 +23,8 @@ export class SearchRunService {
   ) {}
 
   async run(search: Search) {
+    this.logger.log(`Running search: ${search.id}`);
+
     const run = await this.startRun(search);
 
     await this.extractionService.extract(search, run);

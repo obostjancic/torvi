@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Search } from 'src/search/entities/search.entity';
+import { Search } from '../search/entities/search.entity';
 import { StrategyFactory } from './strategies/strategy.factory';
 import { v4 } from 'uuid';
-import { SearchRun } from 'src/search/entities/search-run.entity';
+import { SearchRun } from '../search/entities/search-run.entity';
 
 @Injectable()
 export class ExtractionService {

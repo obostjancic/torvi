@@ -6,22 +6,18 @@ import { SearchModule } from './search/search.module';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigService } from './config/config.service';
 import { ExtractionModule } from './extraction/extraction.module';
 import { NotificationModule } from './notification/notification.module';
 import { RefinementModule } from './refinement/refinement.module';
-import { SearchRun } from './search/entities/search-run.entity';
-import { Search } from './search/entities/search.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'gpm.db',
-      entities: [Search, SearchRun],
-      synchronize: true,
-      migrations: ['dist/**/migrations/*.{ts,js}'],
-      migrationsRun: true,
+    ConfigModule.forRoot({ envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env' }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => configService.getDbConfig(),
+      inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
     SearchModule,

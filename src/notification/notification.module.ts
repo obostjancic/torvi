@@ -4,7 +4,8 @@ import { Module } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { StrategyFactory } from './strategies/strategy.factory';
 import { ConfigModule } from '../config/config.module';
-import { ConfigService } from 'src/config/config.service';
+import { ConfigService } from '../config/config.service';
+import { MessageService } from './message.service';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ConfigService } from 'src/config/config.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [NotificationService, StrategyFactory],
+  providers: [NotificationService, StrategyFactory, MessageService],
   exports: [NotificationService],
 })
 export class NotificationModule {}

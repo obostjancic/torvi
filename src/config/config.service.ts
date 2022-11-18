@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Config } from './config.interface';
+import { SearchRun } from '../search/entities/search-run.entity';
+import { Search } from '../search/entities/search.entity';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-// istanbul ignore next
 @Injectable()
 export class ConfigService {
   private readonly config: Config;
@@ -20,6 +22,14 @@ export class ConfigService {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      db: {
+        type: process.env.DB_TYPE,
+        database: process.env.DB_DATABASE,
+        synchronize: true,
+        entities: [Search, SearchRun],
+        migrations: ['dist/**/migrations/*.{ts,js}'],
+        migrationsRun: true,
+      },
     };
 
     this.logger.log(`Using config: ${JSON.stringify(this.config, null, 2)}`);
@@ -31,6 +41,10 @@ export class ConfigService {
 
   public getEmailAuth() {
     return this.config.emailAuth;
+  }
+
+  public getDbConfig() {
+    return this.config.db as TypeOrmModuleOptions;
   }
 
   private toBoolean(value: string): boolean {

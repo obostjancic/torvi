@@ -8,4 +8,12 @@ export interface Config {
     user: string;
     pass: string;
   };
+  db: {
+    type: string;
+    database: string;
+    synchronize: boolean;
+    entities: unknown[];
+    migrations: string[];
+    migrationsRun: boolean;
+  };
 }

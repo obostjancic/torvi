@@ -5,4 +5,10 @@ export type NotificationChannel = SlackNotificationChannel | EmailNotificationCh
 
 export type NotificationConfig = {
   channels: NotificationChannel[];
+  format: {
+    title?: string;
+    prefix?: string;
+    postfix?: string;
+    date?: string;
+  };
 };

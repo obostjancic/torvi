@@ -1,4 +1,4 @@
-import { groupBy } from 'src/extraction/strategies/grill-area/grill-area.utils';
+import { groupBy } from '../../extraction/strategies/grill-area/grill-area.utils';
 
 export const GroupOperatorType = 'group';
 

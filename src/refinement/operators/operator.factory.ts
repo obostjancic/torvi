@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SearchRun } from 'src/search/entities/search-run.entity';
+import { SearchRun } from '../../search/entities/search-run.entity';
 import { Repository } from 'typeorm';
 import { RefinementOperator } from '../config.entity';
 import { DiffOperatorImpl, DiffOperatorType } from './diff.operator';
