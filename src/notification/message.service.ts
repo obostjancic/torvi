@@ -5,18 +5,24 @@ import { Search } from '../search/entities/search.entity';
 export type Message = {
   title: string;
   prefix: string;
-  results: string[];
+  results: {
+    extracted: string[];
+    refined: string[];
+  };
   postfix: string;
 };
 
 @Injectable()
 export class MessageService {
-  public async constructMessage(results: any[], search: Search, run: SearchRun): Promise<Message> {
+  public async constructMessage(search: Search, run: SearchRun): Promise<Message> {
     const { title, prefix, postfix } = search.config.notification.format;
     const message = {
       title,
       prefix,
-      results: results.map((result) => formatter(result)),
+      results: {
+        extracted: run.extractedResults.map((result) => formatter(result)),
+        refined: run.refinedResults.map((result) => formatter(result)),
+      },
       postfix,
     };
     return message;

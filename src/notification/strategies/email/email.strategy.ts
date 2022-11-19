@@ -21,7 +21,7 @@ export class EmailStrategy implements NotificationStrategy {
       await this.mailerService.sendMail({
         to: this.config.to,
         subject: message.title,
-        text: [message.prefix, ...message.results, message.postfix].join('\n'),
+        text: [message.prefix, ...message.results.extracted, message.postfix].join('\n'),
       });
     } catch (e) {
       this.logger.error(e);

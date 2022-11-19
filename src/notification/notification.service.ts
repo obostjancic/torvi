@@ -11,10 +11,10 @@ export class NotificationService {
 
   constructor(private readonly strategies: StrategyFactory, private readonly messageService: MessageService) {}
 
-  async notify(search: Search, run: SearchRun, results: any[]) {
+  async notify(search: Search, run: SearchRun) {
     const { channels } = search.config.notification;
     try {
-      const message = await this.messageService.constructMessage(results, search, run);
+      const message = await this.messageService.constructMessage(search, run);
 
       await this.broadcastMessage(channels, message);
     } catch (e) {

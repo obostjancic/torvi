@@ -11,7 +11,7 @@ export class RefinementService {
 
   async refine(search: Search, run: SearchRun) {
     const { operators } = search.config.refinement;
-    let results = run.results;
+    let results = run.extractedResults;
     try {
       this.logger.log(`Running refinement: ${operators.map((o) => o.type)}`);
 

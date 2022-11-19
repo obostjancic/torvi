@@ -14,7 +14,7 @@ export class MockSlackMessageStrategy implements NotificationStrategy {
 
   private async constructMessage(message: Message) {
     // TODO read config for formatting
-    const text = [message.title, '\n', message.prefix, ...message.results, message.postfix].join('\n');
+    const text = [message.title, '\n', message.prefix, ...message.results.extracted, message.postfix].join('\n');
 
     if (text.length >= this.MAX_MESSAGE_LENGTH) {
       this.logger.warn(`Message is too long (${text.length}), truncating`);

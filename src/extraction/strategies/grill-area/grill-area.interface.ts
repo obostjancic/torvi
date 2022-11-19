@@ -6,6 +6,7 @@ export type GrillAreaConfig = {
   from: Date;
   to: Date;
   areas: number[];
+  weekdays?: string[];
 };
 
 export type GrillAreaSource = {

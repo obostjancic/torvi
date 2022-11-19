@@ -1,8 +1,27 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Config } from './config.interface';
 import { SearchRun } from '../search/entities/search-run.entity';
 import { Search } from '../search/entities/search.entity';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+
+export interface Config {
+  port: number;
+  mockExtraction: boolean;
+  mockRefinement: boolean;
+  mockNotification: boolean;
+  runScheduledSearches: boolean;
+  emailAuth?: {
+    user: string;
+    pass: string;
+  };
+  db: {
+    type: string;
+    database: string;
+    synchronize: boolean;
+    entities: unknown[];
+    migrations: string[];
+    migrationsRun: boolean;
+  };
+}
 
 @Injectable()
 export class ConfigService {
@@ -13,7 +32,7 @@ export class ConfigService {
     this.logger = new Logger(ConfigService.name);
 
     this.config = {
-      port: Number(process.env.PORT),
+      port: Number(process.env.PORT) || 3000,
       mockExtraction: this.toBoolean(process.env.MOCK_EXTRACTION),
       mockRefinement: this.toBoolean(process.env.MOCK_REFINEMENT),
       mockNotification: this.toBoolean(process.env.MOCK_NOTIFICATION),
@@ -23,8 +42,8 @@ export class ConfigService {
         pass: process.env.EMAIL_PASS,
       },
       db: {
-        type: process.env.DB_TYPE,
-        database: process.env.DB_DATABASE,
+        type: process.env.DB_TYPE || 'sqlite',
+        database: process.env.DB_DATABASE || 'gpm',
         synchronize: true,
         entities: [Search, SearchRun],
         migrations: ['dist/**/migrations/*.{ts,js}'],
@@ -44,7 +63,7 @@ export class ConfigService {
   }
 
   public getDbConfig() {
-    return this.config.db as TypeOrmModuleOptions;
+    return this.get('db') as TypeOrmModuleOptions;
   }
 
   private toBoolean(value: string): boolean {

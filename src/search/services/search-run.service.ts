@@ -27,14 +27,14 @@ export class SearchRunService {
 
     const run = await this.startRun(search);
 
-    await this.extractionService.extract(search, run);
-    this.validateSchema(run, search.config.input?.schema);
+    run.extractedResults = await this.extractionService.extract(search);
+    this.validateSchema(run.extractedResults, search.config.input?.schema);
     await this.searchRunRepo.save(run);
 
-    const refinedResults = await this.refinementService.refine(search, run);
-    this.validateSchema(run, search.config.output?.schema);
+    run.refinedResults = await this.refinementService.refine(search, run);
+    this.validateSchema(run.refinedResults, search.config.output?.schema);
 
-    await this.notificationService.notify(search, run, refinedResults);
+    await this.notificationService.notify(search, run);
 
     await this.endRun(run);
 
@@ -50,10 +50,10 @@ export class SearchRunService {
     return this.searchRunRepo.update(run.id, {});
   }
 
-  private validateSchema(run: SearchRun, schema: any) {
+  private validateSchema(results, schema: any) {
     if (!schema) return;
     try {
-      this.validator.validate(run.results, schema, { throwAll: true });
+      this.validator.validate(results, schema, { throwAll: true });
     } catch (e) {
       this.logger.error(e.errors.map((e: any) => e.toString()));
       throw e;

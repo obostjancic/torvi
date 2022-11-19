@@ -1,6 +1,6 @@
 import { format, parse } from 'date-fns';
 import { de } from 'date-fns/locale';
-
+// TODO: clean up
 export type AreaResult = {
   numOfDaysAvailable: number;
   days: Date[];
@@ -18,7 +18,7 @@ export const toDate = (dayStr: string) => {
 export const splitIntoNumAndLocation = (str: string) => {
   const [areaNumber, location] = str.split('(');
   return {
-    areaNumber: areaNumber.slice(6).trim(),
+    areaNumber: Number(areaNumber.slice(6).trim()),
     location: location.trim().replace(')', ''),
   };
 };
@@ -83,6 +83,10 @@ export const datesForMonth = (month: string) => {
       from: new Date('12-01-2022'),
       to: new Date('12-31-2022'),
     },
+    january: {
+      from: new Date('01-01-2023'),
+      to: new Date('01-31-2023'),
+    },
   };
 
   return intervalMap[month];
@@ -108,4 +112,15 @@ export const getMonthNamesInInterval = (start: Date, end: Date) => {
     date.setMonth(date.getMonth() + 1);
   }
   return months;
+};
+
+export const filterInterval = (from: Date, to: Date, day: Date) => {
+  return day >= from && day <= to;
+};
+
+export const filterWeekdays = (weekdays: string[], day: Date) => {
+  if (weekdays?.length && !weekdays.includes(format(day, 'eeee').toLowerCase())) {
+    return false;
+  }
+  return true;
 };

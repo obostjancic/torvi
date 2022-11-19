@@ -17,13 +17,14 @@ export class DiffOperatorImpl<T> {
 
   public async run(run, results): Promise<T[]> {
     const lastRun = await this.searchRunRepo.findOne({
-      where: { search: run.search, id: Not(run.id), results: Not(IsNull()) },
+      where: { search: run.search, id: Not(run.id), extractedResults: Not(IsNull()) },
       order: { created: 'DESC' },
     });
 
-    return diffs(lastRun?.results ?? [], results);
+    return diffs(lastRun?.extractedResults ?? [], results);
   }
 }
+
 // TODO write test
 const diffs = (arr1, arr2) => {
   const lastRunMap = toHashMap(arr1);

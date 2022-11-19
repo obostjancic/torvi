@@ -11,9 +11,9 @@ import { HttpModule } from '@nestjs/axios';
     HttpModule,
     // FIXME: try to pull this into the strategy itself
     PlaywrightModule.forRoot({
-      headless: true,
+      headless: false,
       channel: 'chrome',
-      isGlobal: true,
+      isGlobal: false,
     }),
   ],
   providers: [ExtractionService, StrategyFactory],

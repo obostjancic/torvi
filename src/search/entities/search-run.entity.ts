@@ -25,5 +25,8 @@ export class SearchRun {
   updated: Date;
 
   @Column({ type: 'simple-json', nullable: true })
-  results?: unknown[];
+  extractedResults?: unknown[];
+
+  @Column({ type: 'simple-json', nullable: true })
+  refinedResults?: unknown[];
 }

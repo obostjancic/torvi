@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { InjectPage } from 'nestjs-playwright';
-import { Page } from 'playwright';
+import { InjectBrowser } from 'nestjs-playwright';
+import { Browser } from 'playwright';
 import { ConfigService } from '../../config/config.service';
 import { ExtractionSource } from '../config.entity';
 import { GrillAreaSourceType } from './grill-area/grill-area.interface';
@@ -14,8 +14,8 @@ import { ExtractionResult, ExtractionStrategy } from './strategy.interface';
 
 @Injectable()
 export class StrategyFactory {
-  @InjectPage() // FIXME make this work within the strategy itself
-  private readonly page: Page;
+  @InjectBrowser() // FIXME make this work within the strategy itself
+  private readonly browser: Browser;
 
   constructor(private readonly config: ConfigService, private readonly httpService: HttpService) {}
 
@@ -29,7 +29,7 @@ export class StrategyFactory {
 
   private getStrategy(source: ExtractionSource): ExtractionStrategy<ExtractionResult> {
     if (source.type === GrillAreaSourceType) {
-      return new GrillAreaStrategy(source.config, this.page);
+      return new GrillAreaStrategy(source.config, this.browser);
     } else if (source.type === JSONAPISourceType) {
       return new JSONAPIStrategy(source.config, this.httpService);
     }
