@@ -26,7 +26,7 @@ export class DiffOperatorImpl<T> {
 }
 
 // TODO write test
-const diffs = (arr1, arr2) => {
+export const diffs = (arr1, arr2) => {
   const lastRunMap = toHashMap(arr1);
   const thisRunMap = toHashMap(arr2);
 
