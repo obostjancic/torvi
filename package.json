@@ -38,6 +38,7 @@
     "date-fns": "^2.29.3",
     "jsonschema": "^1.4.1",
     "nestjs-playwright": "^1.1.1",
+    "node-html-parser": "^6.1.4",
     "nodemailer": "^6.8.0",
     "nodemailer-sendinblue-transport": "^2.0.0",
     "playwright": "^1.27.1",

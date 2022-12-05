@@ -18,7 +18,7 @@ export class OperatorFactory {
     } else if (operator.type === FilterOperatorType) {
       return filter(results, operator);
     } else if (operator.type === DiffOperatorType) {
-      return await new DiffOperatorImpl(this.searchRunRepo).run(run, results);
+      return await new DiffOperatorImpl(this.searchRunRepo).run(results, { ...operator, run });
     }
   }
 }

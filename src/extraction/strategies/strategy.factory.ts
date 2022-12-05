@@ -11,6 +11,8 @@ import { JSONAPISourceType } from './json-api/json-api.interface';
 import { JSONAPIStrategy } from './json-api/json-api.strategy';
 import { MockJSONAPIStrategy } from './json-api/json-api.strategy.mock';
 import { ExtractionResult, ExtractionStrategy } from './strategy.interface';
+import { WillhabenSourceType } from './willhaben/willhaben.interface';
+import { WillhabenStrategy } from './willhaben/willhaben.strategy';
 
 @Injectable()
 export class StrategyFactory {
@@ -32,6 +34,8 @@ export class StrategyFactory {
       return new GrillAreaStrategy(source.config, this.browser);
     } else if (source.type === JSONAPISourceType) {
       return new JSONAPIStrategy(source.config, this.httpService);
+    } else if (source.type === WillhabenSourceType) {
+      return new WillhabenStrategy(source.config, this.httpService);
     }
   }
 

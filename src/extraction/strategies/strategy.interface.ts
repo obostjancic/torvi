@@ -1,6 +1,4 @@
-export type ExtractionResult = {
-  id: number;
-};
+export type ExtractionResult = Record<string, any>;
 
 export interface ExtractionStrategy<T extends ExtractionResult> {
   run: () => Promise<T[]>;

@@ -7,6 +7,8 @@ export const DiffOperatorType = 'diff';
 
 export type DiffOperatorOpts = {
   type: typeof DiffOperatorType;
+  run: SearchRun;
+  by?: string;
 };
 
 export type DiffOperator<T> = (results: T[], opts: DiffOperatorOpts) => T[];
@@ -15,43 +17,58 @@ export type DiffOperator<T> = (results: T[], opts: DiffOperatorOpts) => T[];
 export class DiffOperatorImpl<T> {
   constructor(private readonly searchRunRepo: Repository<SearchRun>) {}
 
-  public async run(run, results): Promise<T[]> {
+  public async run(results, opts: DiffOperatorOpts): Promise<T[]> {
     const lastRun = await this.searchRunRepo.findOne({
-      where: { search: run.search, id: Not(run.id), extractedResults: Not(IsNull()) },
+      where: { search: opts.run.search, id: Not(opts.run.id), extractedResults: Not(IsNull()) },
       order: { created: 'DESC' },
     });
 
-    return diffs(lastRun?.extractedResults ?? [], results);
+    return diffs(lastRun?.extractedResults ?? [], results, opts.by);
   }
 }
 
 // TODO write test
-export const diffs = (arr1, arr2) => {
-  const lastRunMap = toHashMap(arr1);
-  const thisRunMap = toHashMap(arr2);
-
-  const diffResults = [];
-
-  for (const [key, value] of lastRunMap) {
-    if (!thisRunMap.has(key)) {
-      diffResults.push({ ...value, _diff: 'removed' });
-    }
+export const diffs = (arr1, arr2, by = 'id') => {
+  if (arr1[0]?.[by] === undefined || arr2[0]?.[by] === undefined) {
+    return mapDiffs(toHashMap(arr1), toHashMap(arr2));
   }
 
-  for (const [key, value] of thisRunMap) {
-    if (!lastRunMap.has(key)) {
-      diffResults.push({ ...value, _diff: 'added' });
-    }
-  }
-
-  return diffResults;
+  return mapDiffs(toKeyMap(arr1, by), toKeyMap(arr2, by));
 };
 
-const toHashMap = (results: any[] = []) => {
-  return new Map<string, any>(
+const toKeyMap = (results: unknown[] = [], by: string): Map<string, unknown> => {
+  const map = new Map();
+
+  for (const result of results) {
+    map.set(result[by], result);
+  }
+
+  return map;
+};
+
+const toHashMap = (results: unknown[] = []): Map<string, unknown> => {
+  return new Map<string, unknown>(
     results.map((r: any) => {
       const hashed = createHash('md5').update(JSON.stringify(r)).digest('hex');
       return [hashed, r];
     }) as any,
   );
+};
+
+const mapDiffs = (map1: Map<string, any>, map2: Map<string, any>) => {
+  const diffResults = [];
+
+  for (const [key, value] of map1) {
+    if (!map2.has(key)) {
+      diffResults.push({ ...value, _diff: 'removed' });
+    }
+  }
+
+  for (const [key, value] of map2) {
+    if (!map1.has(key)) {
+      diffResults.push({ ...value, _diff: 'added' });
+    }
+  }
+
+  return diffResults;
 };
