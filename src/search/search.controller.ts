@@ -37,7 +37,6 @@ export class SearchController {
     return this.searchService.remove(+id);
   }
 
-  // TODO just dev
   @Delete()
   async removeAll() {
     const searches = await this.searchService.findAll();

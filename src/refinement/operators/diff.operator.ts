@@ -17,18 +17,21 @@ export type DiffOperator<T> = (results: T[], opts: DiffOperatorOpts) => T[];
 export class DiffOperatorImpl<T> {
   constructor(private readonly searchRunRepo: Repository<SearchRun>) {}
 
-  public async run(results, opts: DiffOperatorOpts): Promise<T[]> {
+  public async run(results: T[], opts: DiffOperatorOpts): Promise<T[]> {
     const lastRun = await this.searchRunRepo.findOne({
       where: { search: opts.run.search, id: Not(opts.run.id), extractedResults: Not(IsNull()) },
       order: { created: 'DESC' },
     });
 
-    return diffs(lastRun?.extractedResults ?? [], results, opts.by);
+    if (lastRun) {
+      return diffs(lastRun.extractedResults, results, opts.by);
+    }
+
+    return diffs([], results, opts.by);
   }
 }
 
-// TODO write test
-export const diffs = (arr1, arr2, by = 'id') => {
+export const diffs = (arr1: unknown[], arr2: unknown[], by = 'id') => {
   if (arr1[0]?.[by] === undefined || arr2[0]?.[by] === undefined) {
     return mapDiffs(toHashMap(arr1), toHashMap(arr2));
   }

@@ -9,7 +9,6 @@ export type GroupOperatorOpts<T> = {
 
 export type GroupOperator<T> = (results: T[], opts: GroupOperatorOpts<T>) => T[];
 
-// TODO write test
 export const group: GroupOperator<any> = (results, opts) => {
   if (!results.length) {
     return [];
