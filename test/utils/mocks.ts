@@ -19,7 +19,7 @@ export const mockWillhabenConfig = {
 export const mockSlackConfig = {
   type: 'slack',
   config: {
-    webhook: 'https://hooks.slack.com/services/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',
+    webhook: 'hook',
   },
 };
 export const mockEmailConfig = {
