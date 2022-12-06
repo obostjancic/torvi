@@ -13,6 +13,7 @@ import { MockJSONAPIStrategy } from './json-api/json-api.strategy.mock';
 import { ExtractionResult, ExtractionStrategy } from './strategy.interface';
 import { WillhabenSourceType } from './willhaben/willhaben.interface';
 import { WillhabenStrategy } from './willhaben/willhaben.strategy';
+import { MockWillhabenStrategy } from './willhaben/willhaben.strategy.mock';
 
 @Injectable()
 export class StrategyFactory {
@@ -44,6 +45,8 @@ export class StrategyFactory {
       return new MockGrillAreaStrategy(source.config);
     } else if (source.type === JSONAPISourceType) {
       return new MockJSONAPIStrategy(source.config);
+    } else if (source.type === WillhabenSourceType) {
+      return new MockWillhabenStrategy(source.config);
     }
   }
 }

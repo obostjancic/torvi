@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import * as request from 'supertest';
-import { mockSearch } from 'test/utils/mocks';
+import { mockSearch } from '../utils/mocks';
 
 describe('SearchController (e2e)', () => {
   let app: INestApplication;
@@ -32,6 +32,11 @@ describe('SearchController (e2e)', () => {
     const res = await request(app.getHttpServer()).post(`/searches/${search.id}/runs`);
 
     expect(res.status).toBe(201);
-    expect(res.body.results.length).toBe(4);
+    expect(res.body.extractedResults.length).toBe(4);
+    expect(res.body.refinedResults.length).toBe(1);
+  });
+
+  afterEach(() => {
+    app.close();
   });
 });
