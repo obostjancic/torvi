@@ -37,7 +37,7 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
         })
         .map(({ id, day, area }) => JSON.parse(JSON.stringify({ id, day: format(day, 'yyyy-MM-dd'), area })));
     } catch (e) {
-      console.log('Error fetching grill areas', e);
+      this.logger.log('Error fetching grill areas', e);
       throw e;
     }
   }
@@ -61,7 +61,7 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
 
       return results.flat();
     } catch (e) {
-      console.log('Error fetching grill areas', e);
+      this.logger.log('Error fetching grill areas', e);
       throw e;
     } finally {
       page.close();
@@ -126,8 +126,6 @@ export class GrillAreaStrategy implements ExtractionStrategy<GrillAreaResult> {
 
     let results = [];
     for (const areaOptIdx of areaOpts.map((_, i) => i)) {
-      // console.log(`Checking areas ${areaOptIdx + 1}/${areaOpts.length}`);
-
       // switch to area
       await sleep();
       await page.waitForLoadState('networkidle');

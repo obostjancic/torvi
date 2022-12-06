@@ -36,7 +36,7 @@ describe('SearchController (e2e)', () => {
     expect(res.body.refinedResults.length).toBe(1);
   });
 
-  afterEach(() => {
-    app.close();
+  afterEach(async () => {
+    await app.close();
   });
 });

@@ -9,6 +9,13 @@ on:
 
 jobs:
   release:
+    env:
+      PORT: 8080
+      RUN_SCHEDULED_SEARCHES: false
+      MOCK_EXTRACTION: true
+      MOCK_NOTIFICATION: true
+      DB_TYPE: sqlite
+      DB_DATABASE: gpm-test.db
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

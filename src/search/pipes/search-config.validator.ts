@@ -28,7 +28,6 @@ export class SearchConfigTransformer {
   }
 
   private static validateRefinement(config: SearchConfig) {
-    console.log(config);
     return config;
   }
 
