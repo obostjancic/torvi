@@ -10,7 +10,7 @@ on:
 jobs:
   release:
     env:
-      PORT: 8080
+      # PORT: 8080
       RUN_SCHEDULED_SEARCHES: false
       MOCK_EXTRACTION: true
       MOCK_NOTIFICATION: true
@@ -23,11 +23,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'yarn'
-      - run: yarn
-      - run: yarn build
-      - run: yarn lint
-      - run: yarn test
-      - run: yarn test:e2e
+      # - run: yarn
+      # - run: yarn build
+      # - run: yarn lint
+      # - run: yarn test
+      # - run: yarn test:e2e
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
