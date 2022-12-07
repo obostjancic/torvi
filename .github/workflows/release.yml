@@ -37,6 +37,6 @@ jobs:
           script: |
             cd /var/www/torvi
             git pull
-            yarn
-            yarn build
+            /home/ubuntu/.nvm/versions/node/v18.12.1/bin/yarn
+            /home/ubuntu/.nvm/versions/node/v18.12.1/bin/yarn build
             pm2 restart 0
