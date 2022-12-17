@@ -20,7 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: |
+      - name: Set up Git
+        run: |
           git config --global user.email "${GITHUB_ACTOR}"
           git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
 
@@ -28,8 +29,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'yarn'
-      - run: yarn
-      - run: yarn build
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
+
       - run: yarn lint
       - run: yarn test
       # - run: yarn test:e2e
