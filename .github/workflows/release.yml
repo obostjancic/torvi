@@ -30,15 +30,15 @@ jobs:
         with:
           cache: 'yarn'
 
-      # - name: Install dependencies
-      #   run: yarn
+      - name: Install dependencies
+        run: yarn
 
-      # - name: Build
-      #   run: yarn build
+      - name: Build
+        run: yarn build
 
-      # - name: Lint
-      #   run: yarn lint
-      # - run: yarn test
+      - name: Lint
+        run: yarn lint
+      - run: yarn test
       # - run: yarn test:e2e
 
       - run: yarn version --minor
@@ -58,5 +58,4 @@ jobs:
           script: |
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
-            npm --help
             /var/www/torvi/redeploy.sh
