@@ -3,7 +3,7 @@ cd "$(dirname "$0")"
 
 pwd
 ls
-whoami
+echo $(whoami)
 git reset --hard
 git pull
 yarn
