@@ -38,6 +38,10 @@ jobs:
 
       - run: git push
 
+      - name: Get new version
+        id: version
+        run: echo "version=$(cat package.json | jq .version)" >> $GITHUB_OUTPUT
+
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
 
@@ -48,7 +52,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: Torvi
           environment_name: Torvi-env
-          version_label: cat package.json | jq .version
+          version_label: ${{ steps.version.outputs.version }}
           region: eu-central-1
           deployment_package: deploy.zip
       # - name: executing remote ssh commands using password
