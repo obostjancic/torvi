@@ -42,30 +42,17 @@ jobs:
         id: version
         run: echo "version=v$(cat package.json | jq .version -r)" >> $GITHUB_OUTPUT
 
-      - name: Generate deployment package
-        run: zip -r deploy.zip . -x '*.git*'
-
-      - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v21
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: Torvi
-          environment_name: Torvi-env
-          version_label: ${{ steps.version.outputs.version }}
-          region: eu-central-1
-          deployment_package: deploy.zip
-      # - name: executing remote ssh commands using password
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USER }}
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     script: |
-      #       cd /var/www/torvi
-      #       ls
-      #       whoami
-      #       git pull
-      #       /home/ubuntu/.nvm/versions/node/v18.12.1/bin/yarn
-      #       /home/ubuntu/.nvm/versions/node/v18.12.1/bin/yarn build
-      #       pm2 restart 0
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/torvi
+            ls
+            whoami
+            git pull
+            /home/ubuntu/.nvm/versions/node/v18.12.1/bin/yarn
+            /home/ubuntu/.nvm/versions/node/v18.12.1/bin/yarn build
+            pm2 restart 0
