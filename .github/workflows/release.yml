@@ -49,4 +49,4 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            ./var/www/torvi/redeploy.sh
+            /var/www/torvi/redeploy.sh
