@@ -23,11 +23,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'yarn'
-      # - run: yarn
-      # - run: yarn build
-      # - run: yarn lint
-      # - run: yarn test
-      # - run: yarn test:e2e
+      - run: yarn
+      - run: yarn build
+      - run: yarn lint
+      - run: yarn test
+      - run: yarn test:e2e
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
