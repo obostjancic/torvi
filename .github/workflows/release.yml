@@ -40,7 +40,7 @@ jobs:
           application_name: Torvi
           environment_name: Torvi-env
           version_label: 1
-          region: us-central-1
+          region: eu-central-1
           deployment_package: deploy.zip
       # - name: executing remote ssh commands using password
       #   uses: appleboy/ssh-action@master
