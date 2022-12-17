@@ -1,6 +1,9 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
+pwd
+ls
+whoami
 git reset --hard
 git pull
 yarn
