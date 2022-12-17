@@ -1,3 +1,6 @@
+#!/bin/bash
+cd "$(dirname "$0")"
+
 git reset --hard
 git pull
 /home/ubuntu/.nvm/versions/node/v18.12.1/bin/yarn
