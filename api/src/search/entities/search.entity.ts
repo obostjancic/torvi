@@ -30,9 +30,12 @@ export class Search {
   @Column()
   schedule: string;
 
+  @Column({ default: true })
+  enabled: boolean;
+
   @Column({ type: 'simple-json' })
   config: SearchConfig;
 
-  @OneToMany(() => SearchRun, (run) => run.search)
+  @OneToMany(() => SearchRun, (run) => run.search, { cascade: true })
   runs: SearchRun[];
 }

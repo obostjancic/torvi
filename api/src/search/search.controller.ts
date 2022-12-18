@@ -3,7 +3,7 @@ import { SearchService } from './services/search.service';
 import { CreateSearchDto } from './dto/create-search.dto';
 import { UpdateSearchDto } from './dto/update-search.dto';
 
-@Controller('searches')
+@Controller('api/searches')
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 

@@ -39,8 +39,9 @@ export class SearchService {
     return this.searchRepo.findOne({ where: { id } });
   }
 
-  update(id: number, updateSearchDto: UpdateSearchDto) {
-    return this.searchRepo.update(id, updateSearchDto);
+  async update(id: number, updateSearchDto: UpdateSearchDto) {
+    await this.searchRepo.update(id, updateSearchDto);
+    return this.findOne(id);
   }
 
   remove(id: number) {
