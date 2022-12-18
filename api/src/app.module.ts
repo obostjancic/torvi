@@ -5,7 +5,9 @@ import { SearchModule } from './search/search.module';
 
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { ConfigService } from './config/config.service';
 import { ExtractionModule } from './extraction/extraction.module';
 import { NotificationModule } from './notification/notification.module';
@@ -19,13 +21,16 @@ import { RefinementModule } from './refinement/refinement.module';
       useFactory: async (configService: ConfigService) => configService.getDbConfig(),
       inject: [ConfigService],
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'client', 'dist'),
+    }),
     ScheduleModule.forRoot(),
     SearchModule,
     RefinementModule,
     ExtractionModule,
     NotificationModule,
   ],
-  controllers: [AppController],
+  // controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
