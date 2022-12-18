@@ -24,9 +24,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: "yarn"
-          cache-dependency-path: "api/yarn.lock"
+          cache-dependency-path: "./api/yarn.lock"
 
       - run: cd api
+      - run: pwd
 
       - name: Install dependencies
         run: yarn
@@ -49,9 +50,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: "yarn"
-          cache-dependency-path: "client/yarn.lock"
+          cache-dependency-path: "./client/yarn.lock"
 
       - run: cd client
+      - run: pwd
 
       - name: Install dependencies
         run: yarn
