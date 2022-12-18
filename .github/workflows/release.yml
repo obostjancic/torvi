@@ -27,7 +27,7 @@ jobs:
           cache-dependency-path: ./api/yarn.lock
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --pure-lockfile --production
         working-directory: ./api
 
       - name: Build
@@ -54,7 +54,7 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --pure-lockfile  --production
         working-directory: ./client
 
       - name: Build

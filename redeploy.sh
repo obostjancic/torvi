@@ -5,11 +5,11 @@ git reset --hard
 git pull
 
 cd client
-yarn 
+yarn install --pure-lockfile --production
 yarn build
 cd ..
 
 cd api
-yarn
+yarn install --pure-lockfile --production
 yarn build
 pm2 restart 0
