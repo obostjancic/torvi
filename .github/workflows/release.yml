@@ -25,7 +25,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: "yarn"
+          path: api
 
       - name: Install dependencies
         run: yarn
@@ -49,7 +50,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: "yarn"
+          path: client
 
       - name: Install dependencies
         run: yarn
