@@ -20,13 +20,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: cd api
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           cache: "yarn"
           cache-dependency-path: "api/yarn.lock"
+
+      - run: cd api
 
       - name: Install dependencies
         run: yarn
@@ -45,13 +45,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: cd client
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           cache: "yarn"
           cache-dependency-path: "client/yarn.lock"
+
+      - run: cd client
 
       - name: Install dependencies
         run: yarn
