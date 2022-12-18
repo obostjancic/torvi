@@ -24,22 +24,23 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: "yarn"
-          cache-dependency-path: "./api/yarn.lock"
-
-      - run: cd api
-      - run: pwd
+          working-directory: ./api
 
       - name: Install dependencies
         run: yarn
+        working-directory: ./api
 
       - name: Build
         run: yarn build
+        working-directory: ./api
 
       - name: Lint
         run: yarn lint
+        working-directory: ./api
 
       - name: Test
         run: yarn test
+        working-directory: ./api
 
   check-client:
     runs-on: ubuntu-latest
@@ -49,23 +50,24 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
+          working-directory: ./client
           cache: "yarn"
-          cache-dependency-path: "./client/yarn.lock"
-
-      - run: cd client
-      - run: pwd
 
       - name: Install dependencies
         run: yarn
+        working-directory: ./client
 
       - name: Build
         run: yarn build
+        working-directory: ./client
 
       - name: Lint
         run: yarn lint
+        working-directory: ./client
 
       - name: Test
         run: yarn test
+        working-directory: ./client
 
   release:
     needs: [check-api, check-client]
