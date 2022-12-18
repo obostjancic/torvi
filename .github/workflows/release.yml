@@ -67,14 +67,12 @@ jobs:
         run: yarn lint
         working-directory: ./client
 
-      # - name: Test
-      #   run: yarn test
-      #   working-directory: ./client
-
   release:
     needs: [check-api, check-client]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Set up Git
         run: |
           git config --global user.email "${GITHUB_ACTOR}"
