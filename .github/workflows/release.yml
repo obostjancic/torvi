@@ -24,6 +24,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: "yarn"
+          cache-dependency-path: ./api/yarn.lock
           working-directory: ./api
 
       - name: Install dependencies
@@ -51,6 +52,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           working-directory: ./client
+          cache-dependency-path: ./client/yarn.lock
           cache: "yarn"
 
       - name: Install dependencies
@@ -79,18 +81,16 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
 
       - name: Create client release
+        working-directory: ./client
         run: |
-          cd client
           yarn config set version-tag-prefix client-v
           yarn version --minor
-          cd ..
 
       - name: Create api release
+        working-directory: ./api
         run: |
-          cd api
           yarn config set version-tag-prefix api-v
           yarn version --minor
-          cd ..
 
       - name: Push release to git
         run: git push && git push --tags
