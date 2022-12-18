@@ -38,18 +38,18 @@ jobs:
 
       - name: Lint
         run: yarn lint
-      - run: yarn test
+
+      - name: Test
+        run: yarn test
       # - run: yarn test:e2e
 
-      - run: yarn version --minor
+      - name: Create release
+        run: yarn version --minor
 
-      - run: git push
+      - name: Push release to git
+        run: git push && git push --tags
 
-      - name: Get new version
-        id: version
-        run: echo "version=v$(cat package.json | jq .version -r)" >> $GITHUB_OUTPUT
-
-      - name: executing remote ssh commands using password
+      - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
