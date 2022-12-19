@@ -34,9 +34,9 @@ export class StrategyFactory {
     if (source.type === GrillAreaSourceType) {
       return new GrillAreaStrategy(source.config, this.browser);
     } else if (source.type === JSONAPISourceType) {
-      return new JSONAPIStrategy(source.config, this.httpService);
+      return new JSONAPIStrategy(source.config, this.httpService, this.config.get('proxy'));
     } else if (source.type === WillhabenSourceType) {
-      return new WillhabenStrategy(source.config, this.httpService);
+      return new WillhabenStrategy(source.config, this.httpService, this.config.get('proxy'));
     }
   }
 

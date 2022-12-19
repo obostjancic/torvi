@@ -21,6 +21,11 @@ export interface Config {
     migrations: string[];
     migrationsRun: boolean;
   };
+  proxy: {
+    protocol: string;
+    host: string;
+    port: number;
+  };
 }
 
 @Injectable()
@@ -48,6 +53,11 @@ export class ConfigService {
         entities: [Search, SearchRun],
         migrations: ['dist/**/migrations/*.{ts,js}'],
         migrationsRun: true,
+      },
+      proxy: {
+        protocol: 'http',
+        host: process.env.PROXY_HOST,
+        port: Number(process.env.PROXY_PORT),
       },
     };
 

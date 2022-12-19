@@ -9,24 +9,34 @@ import { parse } from 'node-html-parser';
 export class WillhabenStrategy implements ExtractionStrategy<WillhabenResult> {
   private readonly logger: Logger = new Logger(WillhabenStrategy.name);
 
-  constructor(private readonly config: WillhabenConfig, private readonly httpService: HttpService) {}
+  constructor(
+    private readonly config: WillhabenConfig,
+    private readonly httpService: HttpService,
+    private readonly proxy,
+  ) {}
 
   async run(): Promise<WillhabenResult[]> {
     const html = await this.fetch();
     const results = this.extractResultList(html);
     return results.map(this.transormResult);
   }
-  private async fetch(): Promise<string> {
-    this.logger.debug(`${this.config.url}`);
-    const res = await firstValueFrom(
-      this.httpService.get(this.config.url).pipe(
-        catchError((error) => {
-          console.error(error.response.data);
-          throw error;
-        }),
-      ),
-    );
 
+  private async fetch(): Promise<string> {
+    this.logger.debug(`${this.config.url}, ${JSON.stringify(this.proxy)}`);
+
+    const res = await firstValueFrom(
+      this.httpService
+        .get(this.config.url, {
+          proxy: this.proxy,
+        })
+        .pipe(
+          catchError((error) => {
+            console.error(error.response.data);
+            throw error;
+          }),
+        ),
+    );
+    console.log(res.data);
     return res.data;
   }
 
