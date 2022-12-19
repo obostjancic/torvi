@@ -15,7 +15,9 @@ import { RefinementModule } from './refinement/refinement.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env' }),
+    ConfigModule.forRoot({
+      envFilePath: join(__dirname, '..', process.env.NODE_ENV === 'test' ? '.env.test' : '.env'),
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => configService.getDbConfig(),
