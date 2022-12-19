@@ -1,7 +1,7 @@
+import React from 'react';
 import { JsonInput, Switch, Table } from '@mantine/core';
 import { Search } from './model/search';
 import { formatDate, formatJSON } from './utils/format';
-import ReactJson from 'react-json-view';
 
 interface SearchTableProps {
   searches: Search[];

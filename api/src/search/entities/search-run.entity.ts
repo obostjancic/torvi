@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -23,6 +24,9 @@ export class SearchRun {
 
   @UpdateDateColumn()
   updated: Date;
+
+  @DeleteDateColumn()
+  deleted?: Date;
 
   @Column({ type: 'simple-json', nullable: true })
   extractedResults?: unknown[];

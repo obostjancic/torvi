@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Drawer, TextInput, Checkbox, Button, Group, Box, JsonInput } from '@mantine/core';
+import React from 'react';
+import { Drawer, TextInput, Button, Group, Box, JsonInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Search } from './model/search';
 import { formatJSON } from './utils/format';

@@ -45,6 +45,6 @@ export class SearchService {
   }
 
   remove(id: number) {
-    return this.searchRepo.delete(id);
+    return this.searchRepo.softDelete(id);
   }
 }

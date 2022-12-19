@@ -1,13 +1,19 @@
-import axios, { AxiosInstance } from 'axios';
-
+import axios from 'axios';
+import type { AxiosInstance } from 'axios';
 export interface Search {
   id: number;
   name: string;
   schedule: string;
   created: Date;
   updated: Date;
-  config: Record<string, any>;
+  config: SearchConfig;
   enabled: boolean;
+}
+
+export interface SearchConfig {
+  extraction: Record<string, any>;
+  refinement: Record<string, any>;
+  notification: Record<string, any>;
 }
 
 export class SearchApi {

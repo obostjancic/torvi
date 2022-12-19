@@ -1,7 +1,7 @@
 import './App.css';
 
 import { Stack } from '@mantine/core';
-
+import React from 'react';
 import { useSearches } from './hooks/search';
 import { ThemeProvider } from './ThemeProvider';
 import { SearchTable } from './SearchTable';
