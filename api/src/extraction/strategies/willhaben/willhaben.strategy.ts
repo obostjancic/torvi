@@ -36,7 +36,6 @@ export class WillhabenStrategy implements ExtractionStrategy<WillhabenResult> {
           }),
         ),
     );
-    console.log(res.data);
     return res.data;
   }
 
