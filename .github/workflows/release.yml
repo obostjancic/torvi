@@ -15,7 +15,7 @@ jobs:
       MOCK_EXTRACTION: true
       MOCK_NOTIFICATION: true
       DB_TYPE: sqlite
-      DB_DATABASE: gpm-test.db
+      DB_DATABASE: torvi-test.db
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

@@ -48,7 +48,7 @@ export class ConfigService {
       },
       db: {
         type: process.env.DB_TYPE || 'sqlite',
-        database: process.env.DB_DATABASE || 'gpm',
+        database: process.env.DB_DATABASE || 'torvi.db',
         synchronize: true,
         entities: [Search, SearchRun],
         migrations: ['dist/**/migrations/*.{ts,js}'],
