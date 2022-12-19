@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { CreateSearchDto } from '../dto/create-search.dto';
 import { UpdateSearchDto } from '../dto/update-search.dto';
 import { SearchRunService } from './search-run.service';
@@ -17,7 +17,7 @@ export class SearchService {
     private readonly scheduleService: SearchScheduleService,
     private readonly searchRunService: SearchRunService,
   ) {
-    this.findAll().then((searches) => {
+    this.findAll({ enabled: true }).then((searches) => {
       this.scheduleService.scheduleSearches(searches);
     });
   }
@@ -31,12 +31,16 @@ export class SearchService {
     return this.searchRepo.save(createSearchDto);
   }
 
-  findAll() {
-    return this.searchRepo.find();
+  findAll(filter: FindOptionsWhere<Search> = {}) {
+    return this.searchRepo.find({ where: filter });
   }
 
   async findOne(id: number): Promise<Search> {
-    return this.searchRepo.findOne({ where: { id } });
+    const search = await this.searchRepo.findOne({ where: { id } });
+    if (!search) {
+      throw new NotFoundException(`Search ${id} not found`);
+    }
+    return search;
   }
 
   async update(id: number, updateSearchDto: UpdateSearchDto) {

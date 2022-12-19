@@ -26,6 +26,7 @@ export interface Config {
     host: string;
     port: number;
   };
+  sentryDSN?: string;
 }
 
 @Injectable()
@@ -59,6 +60,7 @@ export class ConfigService {
         host: process.env.PROXY_HOST,
         port: Number(process.env.PROXY_PORT),
       },
+      sentryDSN: process.env.SENTRY_DSN,
     };
 
     this.logger.log(`Using config: ${JSON.stringify(this.config, null, 2)}`);

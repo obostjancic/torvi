@@ -12,6 +12,7 @@ import { ConfigService } from './config/config.service';
 import { ExtractionModule } from './extraction/extraction.module';
 import { NotificationModule } from './notification/notification.module';
 import { RefinementModule } from './refinement/refinement.module';
+import { SentryModule } from './sentry/sentry.module';
 
 @Module({
   imports: [
@@ -26,11 +27,13 @@ import { RefinementModule } from './refinement/refinement.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'client', 'dist'),
     }),
+    SentryModule.forRoot(),
     ScheduleModule.forRoot(),
     SearchModule,
     RefinementModule,
     ExtractionModule,
     NotificationModule,
+    SentryModule,
   ],
   // controllers: [AppController],
   providers: [AppService],

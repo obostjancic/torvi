@@ -1,6 +1,6 @@
 import { TransformFnParams } from 'class-transformer';
-import { ExtractionConfig } from 'src/extraction/config.entity';
-import { NotificationConfig } from 'src/notification/config.entity';
+import { ExtractionConfig } from '../../extraction/config.entity';
+import { NotificationConfig } from '../../notification/config.entity';
 import { SearchConfig } from '../entities/search.entity';
 
 export class SearchConfigTransformer {
