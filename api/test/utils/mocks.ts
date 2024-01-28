@@ -12,7 +12,7 @@ export const mockWillhabenConfig = {
   name: 'Willhaben Search',
   type: 'willhaben',
   config: {
-    query: 'sfId=ef0b2f4d-0e3d-4427-9a5b-54bb032b5638&rows=200&isNavigation=true&keyword=radkappen+16',
+    url: 'https://www.willhaben.at/iad/kaufen-und-verkaufen/marktplatz/reifen-felgen/radkappen-6275?keyword=radkappen+16+hyundai&sfId=bd3346c3-10a4-4b07-b142-026a76dd239b&rows=30&isNavigation=true',
   },
 };
 
