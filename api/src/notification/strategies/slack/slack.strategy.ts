@@ -38,7 +38,9 @@ export class SlackMessageStrategy implements NotificationStrategy {
   }
 
   private async sendMessage(message: any) {
-    if (!message) throw new Error('Slack message is empty');
+    if (!message) {
+      throw new Error('Slack message is empty');
+    }
 
     await firstValueFrom(
       this.httpService.post(this.config.webhook, message).pipe(

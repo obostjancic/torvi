@@ -20,7 +20,7 @@ export class SearchConfigTransformer {
     }
     for (const source of sources) {
       if (!source.type) {
-        throw new Error('Extraction source must a type');
+        throw new Error('Extraction source must have a type');
       }
     }
 
@@ -32,8 +32,6 @@ export class SearchConfigTransformer {
   }
 
   private static validateNotification(config: NotificationConfig) {
-    const { format } = config;
-
     const defaultFormat = {
       title: 'Search results',
       prefix: 'Here are your results:',
@@ -41,7 +39,7 @@ export class SearchConfigTransformer {
       date: 'dd.MM.yyyy',
     };
 
-    config.format = { ...defaultFormat, ...format };
+    config.format = { ...defaultFormat, ...config.format };
     return config;
   }
 }

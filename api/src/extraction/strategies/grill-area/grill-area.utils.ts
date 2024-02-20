@@ -29,7 +29,9 @@ export const numOfDaysAvailable = (str: string) => {
     .match(/\d+|\./g)
     .join('');
 
-  if (extractedDays.includes('2022')) return 1;
+  if (extractedDays.includes('2022')) {
+    return 1;
+  }
   return Number(extractedDays);
 };
 

@@ -16,7 +16,9 @@ export class EmailStrategy implements NotificationStrategy {
   }
 
   private async sendEmail(message: Message) {
-    if (!message) throw new Error('Email message is empty');
+    if (!message) {
+      throw new Error('Email message is empty');
+    }
     try {
       await this.mailerService.sendMail({
         to: this.config.to,

@@ -8,7 +8,9 @@ export const useSearches = () => {
   const [selectedSearchId, setSelectedSearchId] = useState<number | null>(null);
 
   const loadSearches = async () => {
-    if (!searches.length) setSearches(await api.getSearches());
+    if (!searches.length) {
+      setSearches(await api.getSearches());
+    }
   };
 
   const updateSearch = async (id: number, search: Partial<Search>) => {

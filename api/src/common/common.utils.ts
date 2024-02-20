@@ -13,7 +13,9 @@ export const retry = async <T>(
   try {
     return await fn();
   } catch (e) {
-    if (retries === 1) throw e;
+    if (retries === 1) {
+      throw e;
+    }
     await sleep(delay);
     return retry(fn, { retries: retries - 1, delay: delay * backoff, backoff });
   }

@@ -18,7 +18,7 @@ import { MessageService } from './message.service';
           auth: configService.getEmailAuth(),
         },
         defaults: {
-          from: '"Corno" <no-reply@corno.com>',
+          from: '"Torvi" <no-reply@torvi.com>',
         },
       }),
       inject: [ConfigService],
