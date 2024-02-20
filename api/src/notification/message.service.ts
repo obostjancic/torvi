@@ -27,11 +27,6 @@ export class MessageService {
     };
     return message;
   }
-
-  private formatter(result: any): string {
-    const { title, url, description } = result;
-    return `${title} - ${url} - ${description}`;
-  }
 }
 
 const formatter = (result: any) => {

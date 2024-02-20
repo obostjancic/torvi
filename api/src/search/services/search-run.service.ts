@@ -8,6 +8,8 @@ import { RefinementService } from '../../refinement/refinement.service';
 import { SearchRun } from '../entities/search-run.entity';
 import { Search } from '../entities/search.entity';
 
+type Results = any;
+
 @Injectable()
 export class SearchRunService {
   private readonly logger: Logger = new Logger(SearchRunService.name);
@@ -50,8 +52,10 @@ export class SearchRunService {
     return this.searchRunRepo.update(run.id, {});
   }
 
-  private validateSchema(results, schema: any) {
-    if (!schema) return;
+  private validateSchema(results: Results, schema: any) {
+    if (!schema) {
+      return;
+    }
     try {
       this.validator.validate(results, schema, { throwAll: true });
     } catch (e) {

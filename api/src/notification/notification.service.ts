@@ -24,7 +24,8 @@ export class NotificationService {
   }
 
   private async broadcastMessage(channels: NotificationChannel[], message: Message) {
-    this.logger.log(`Running notifications: ${channels.map((c) => c.type)}`);
+    this.logger.debug(`Running notifications: ${channels.map((c) => c.type)}`);
+
     await Promise.all(
       channels.map(async (channel) => {
         this.logger.debug(`Sending notification through channel: ${channel.type}`);

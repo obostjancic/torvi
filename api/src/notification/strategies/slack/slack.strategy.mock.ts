@@ -32,7 +32,9 @@ export class MockSlackMessageStrategy implements NotificationStrategy {
     };
   }
   private async sendMessage(message: any) {
-    if (!message) throw new Error('Slack message is empty');
+    if (!message) {
+      throw new Error('Slack message is empty');
+    }
     this.logger.log(`Sending slack message: ${JSON.stringify(message)}`);
   }
 }

@@ -79,7 +79,9 @@ const SearchForm = ({ search, onSubmit, onDelete }: SearchFormProps) => {
             color="red"
             type="button"
             onClick={() => {
-              if (confirm('Are you sure you want to delete this search?')) onDelete(search.id);
+              if (confirm('Are you sure you want to delete this search?')) {
+                onDelete(search.id);
+              }
             }}
           >
             Delete
