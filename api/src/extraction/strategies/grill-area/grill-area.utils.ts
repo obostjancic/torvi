@@ -10,7 +10,7 @@ export type AreaResult = {
 
 export const toDate = (dayStr: string) => {
   const parsedDay = parse(dayStr, 'dd. LLLL', 0, { locale: de });
-  parsedDay.setFullYear(2022);
+  parsedDay.setFullYear(2024);
 
   return parsedDay;
 };
@@ -29,7 +29,7 @@ export const numOfDaysAvailable = (str: string) => {
     .match(/\d+|\./g)
     .join('');
 
-  if (extractedDays.includes('2022')) {
+  if (extractedDays.includes('2024')) {
     return 1;
   }
   return Number(extractedDays);
@@ -57,37 +57,53 @@ export const mergeResults = (results: any[][]) => {
 
 export const datesForMonth = (month: string) => {
   const intervalMap = {
+    january: {
+      from: new Date('01-01-2024'),
+      to: new Date('01-31-2024'),
+    },
+    february: {
+      from: new Date('02-01-2024'),
+      to: new Date('02-28-2024'),
+    },
+    march: {
+      from: new Date('03-01-2024'),
+      to: new Date('03-31-2024'),
+    },
+    april: {
+      from: new Date('04-01-2024'),
+      to: new Date('04-30-2024'),
+    },
+    may: {
+      from: new Date('05-01-2024'),
+      to: new Date('05-31-2024'),
+    },
     june: {
-      from: new Date('06-01-2022'),
-      to: new Date('06-30-2022'),
+      from: new Date('06-01-2024'),
+      to: new Date('06-30-2024'),
     },
     july: {
-      from: new Date('07-01-2022'),
-      to: new Date('07-31-2022'),
+      from: new Date('07-01-2024'),
+      to: new Date('07-31-2024'),
     },
     august: {
-      from: new Date('08-01-2022'),
-      to: new Date('08-31-2022'),
+      from: new Date('08-01-2024'),
+      to: new Date('08-31-2024'),
     },
     september: {
-      from: new Date('09-01-2022'),
-      to: new Date('09-30-2022'),
+      from: new Date('09-01-2024'),
+      to: new Date('09-30-2024'),
     },
     october: {
-      from: new Date('10-01-2022'),
-      to: new Date('10-31-2022'),
+      from: new Date('10-01-2024'),
+      to: new Date('10-31-2024'),
     },
     november: {
-      from: new Date('11-01-2022'),
-      to: new Date('11-30-2022'),
+      from: new Date('11-01-2024'),
+      to: new Date('11-30-2024'),
     },
     december: {
-      from: new Date('12-01-2022'),
-      to: new Date('12-31-2022'),
-    },
-    january: {
-      from: new Date('01-01-2023'),
-      to: new Date('01-31-2023'),
+      from: new Date('12-01-2024'),
+      to: new Date('12-31-2024'),
     },
   };
 
