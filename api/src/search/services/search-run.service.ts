@@ -36,19 +36,22 @@ export class SearchRunService {
     run.refinedResults = await this.refinementService.refine(search, run);
     this.validateSchema(run.refinedResults, search.config.output?.schema);
 
-    await this.notificationService.notify(search, run);
-
+    if (run.refinedResults.length > 0) {
+      await this.notificationService.notify(search, run);
+    }
     await this.endRun(run);
 
     return run;
   }
 
   private async startRun(search: Search) {
+    this.logger.log(`Starting search run: ${search.id}`);
     const run = this.searchRunRepo.create({ search: search.id });
     return this.searchRunRepo.save(run);
   }
 
   private async endRun(run: SearchRun) {
+    this.logger.log(`Ending search run: ${run.id}`);
     return this.searchRunRepo.update(run.id, {});
   }
 
